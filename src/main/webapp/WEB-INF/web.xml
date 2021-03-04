@@ -8,7 +8,22 @@
         <session-timeout>20</session-timeout>
     </session-config>
 
-    <!--
+	<login-config>
+        <auth-method>XSUAA</auth-method>
+    </login-config>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Baseline Security</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        
+    </security-constraint>
+	<security-role>
+		<role-name>Display</role-name>
+	</security-role>
+<!--  
+    
     <login-config>
         <auth-method>XSUAA</auth-method>
     </login-config>
@@ -18,15 +33,17 @@
             <web-resource-name>Baseline Security</web-resource-name>
             <url-pattern>/*</url-pattern>
         </web-resource-collection>
-        <auth-constraint>
+         <auth-constraint>
             <role-name>*</role-name>
-        </auth-constraint>
+        </auth-constraint> 
+        
     </security-constraint>
-
-    <security-role>
+-->
+	<!-- <security-role>
         <role-name>Display</role-name>
-    </security-role>
-    -->
+    </security-role> -->
+    
+    
 	 
 	 <!-- 
     <filter>

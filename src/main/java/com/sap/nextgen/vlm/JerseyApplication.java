@@ -1,7 +1,6 @@
 package com.sap.nextgen.vlm;
 
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -10,36 +9,23 @@ import javax.inject.Singleton;
 import javax.ws.rs.ApplicationPath;
 
 import org.glassfish.jersey.internal.inject.AbstractBinder;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.sap.ea.eacp.okhttp.destinationclient.OkHttpDestinationFactory;
-import com.sap.ea.nga.jersey.exceptions.StackTraceExceptionMapper;
-import com.sap.ea.nga.jersey.features.MonitoringFeature;
-import com.sap.ea.nga.jersey.filter.ETagCacheFilterFeature;
-import com.sap.ea.nga.jersey.filter.ETagFilterFeature;
-import com.sap.ea.nga.jersey.filter.Utf8CharsetFilter;
 import com.sap.ea.nga.jersey.filter.sapstatistics.SapStatisticsExtension;
 import com.sap.ea.nga.jersey.filter.servertiming.ServerTimingExtension;
 import com.sap.ea.nga.jersey.openapi.DeprecatedExtension;
 import com.sap.ea.nga.jersey.openapi.OpenApiResourceFactory;
 import com.sap.ea.nga.jersey.openapi.RolesAllowedOpenAPIExtension;
 import com.sap.ea.nga.jersey.provider.jackson.ObjectMapperFactory;
-import com.sap.ea.nga.jersey.provider.jackson.ObjectMapperProvider;
-import com.sap.ea.nga.jersey.provider.remotequery.RemoteQueryBinder;
-import com.sap.ea.nga.jersey.services.remotequery.RemoteQueryAPI;
 import com.sap.ea.nga.jersey.user.Roles;
-import com.sap.it.mobile.hcp.jersey.injection.UserProviderFactory;
 import com.sap.nextgen.vlm.api.CorpOverviewDataApiV3;
 import com.sap.nextgen.vlm.constants.DataEndpoint;
 import com.sap.nextgen.vlm.providers.DataProvider;
 import com.sap.nextgen.vlm.providers.mtn.CloudTransactionsS4HanaAdrmProvider;
-import com.sap.security.um.user.UserProvider;
 
 import io.swagger.annotations.ExternalDocs;
 import io.swagger.annotations.Info;

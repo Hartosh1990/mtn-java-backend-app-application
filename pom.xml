@@ -57,6 +57,7 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- 
         <dependency>
             <groupId>com.sap.cloud.sdk.cloudplatform</groupId>
             <artifactId>scp-cf</artifactId>
@@ -71,6 +72,23 @@
             <scope>runtime</scope>
         </dependency>
         
+         -->
+        <!-- Dependencies for XSUAA -->
+         	 
+    <!-- xsuaa library -->
+    
+		<dependency>
+			<groupId>com.sap.cloud.security</groupId>
+			<artifactId>java-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+         
+         
         <!-- Required Nucleus Dependencies -->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -126,12 +144,6 @@
         </dependency>
         <!-- Lombok -->
 
-        <!-- JerseyWebTestContainer requires Servlet 4.0.0 -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
-        </dependency>
 
         <!-- Test -->
 
@@ -146,11 +158,6 @@
             <version>2.9.9</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.9</version>
-        </dependency>
 
         <!--  End of Nucleus -->
 		
@@ -174,12 +181,13 @@
             <scope>provided</scope>
         </dependency>
 
+		<!-- 
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
-
+ 		-->
         <dependency>
             <groupId>com.sap.cloud.sdk.testutil</groupId>
             <artifactId>testutil-core</artifactId>

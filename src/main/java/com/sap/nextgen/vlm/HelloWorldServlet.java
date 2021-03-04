@@ -1,17 +1,24 @@
 package com.sap.nextgen.vlm;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
 
+import javax.servlet.annotation.HttpConstraint;
+import javax.servlet.annotation.ServletSecurity;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.sap.cloud.security.token.AccessToken;
+import com.sap.cloud.security.token.TokenClaims;
 
 
 
 @WebServlet("/hello")
+@ServletSecurity(@HttpConstraint(rolesAllowed = { "Display" }))
 public class HelloWorldServlet extends HttpServlet
 {
     private static final long serialVersionUID = 1L;
@@ -22,6 +29,15 @@ public class HelloWorldServlet extends HttpServlet
         throws IOException
     {
         logger.info("I am running!");
-        response.getWriter().write("Hello World");
+        AccessToken token = (AccessToken) request.getUserPrincipal();
+		try {
+			response.getWriter().write("You ('"
+					+ token.getClaimAsString(TokenClaims.EMAIL) + "') "
+					+ "are authenticated and can access the application.");
+		} catch (final IOException e) {
+			logger.error("Failed to write error response: " + e.getMessage() + ".", e);
+		}
+    	response.getWriter().write("Hello");
     }
 }
+

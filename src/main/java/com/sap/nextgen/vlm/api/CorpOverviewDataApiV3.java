@@ -14,7 +14,6 @@ import org.glassfish.hk2.api.IterableProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.ea.eacp.remotequeryclient.client.RemoteQueryClient;
 import com.sap.ea.nga.jersey.provider.jackson.ObjectMapperProvider;
 //import com.sap.ida.eacp.ci.co.togglz.FeatureToggle;
 import com.sap.ida.eacp.nucleus.data.client.V3NucleusDataAPI;
