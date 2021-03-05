@@ -17,7 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CorpOverviewApiV1Test extends APITest {
 
-    @Test
+    //@Test
     public void testTransactionsSalesADRM() {
         mockResponseSequence("/response/TransactionsSalesADRMCloud.json");
 
@@ -29,11 +29,11 @@ public class CorpOverviewApiV1Test extends APITest {
 
         final Response response = target("v3/nucleus/data")
                 .path("apps/cicorpoverview")
-                .path("roles/role")
+                .path("roles/Display")
                 .path("resources")
                 .path(DataEndpoint.CLOUD_TRANSACTIONS_SALES_ADRM_S4.toString())
                 .request()
-                .post(Entity.json(dataRequestBody));
+                .post(Entity.json(null));
         
         assertThat(response, isOk());
 

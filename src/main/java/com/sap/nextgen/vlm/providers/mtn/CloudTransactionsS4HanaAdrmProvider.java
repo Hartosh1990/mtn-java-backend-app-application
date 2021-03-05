@@ -18,7 +18,7 @@ public class CloudTransactionsS4HanaAdrmProvider extends AbstractProvider implem
 
     @Override
     public ResultContainer<MtnDashboardRMO> loadData(DataRequestBody requestBody) {
-        resolveRequestBody(requestBody);
+        //resolveRequestBody(requestBody);
 
 //        RemoteQueryBridge.Client client = getBridgeClient();
 //

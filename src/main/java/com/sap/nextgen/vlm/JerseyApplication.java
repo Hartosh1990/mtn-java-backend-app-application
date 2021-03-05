@@ -10,6 +10,7 @@ import javax.ws.rs.ApplicationPath;
 
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +64,7 @@ public class JerseyApplication extends ResourceConfig {
 
 //        register(ObjectMapperProvider.class);
         //register(MultiPartFeature.class);
-//        register(RolesAllowedDynamicFeature.class);
+        register(RolesAllowedDynamicFeature.class);
         register(new LocalInjectionBinder());
 
 //        MonitoringFeature.register(this);
@@ -85,7 +86,7 @@ public class JerseyApplication extends ResourceConfig {
         // Swagger
         register(OpenApiResourceFactory.create(JerseyApplication.class));
         OpenAPIExtensions.getExtensions().addAll(Arrays.asList(
-                RolesAllowedOpenAPIExtension.create(Roles.R_USER),
+                RolesAllowedOpenAPIExtension.create("Display"),
                 SapStatisticsExtension.create(),
                 ServerTimingExtension.create(),
                 DeprecatedExtension.create()
