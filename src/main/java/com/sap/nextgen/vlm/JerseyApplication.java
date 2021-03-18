@@ -22,29 +22,23 @@ import com.sap.ea.nga.jersey.openapi.DeprecatedExtension;
 import com.sap.ea.nga.jersey.openapi.OpenApiResourceFactory;
 import com.sap.ea.nga.jersey.openapi.RolesAllowedOpenAPIExtension;
 import com.sap.ea.nga.jersey.provider.jackson.ObjectMapperFactory;
-import com.sap.ea.nga.jersey.user.Roles;
 import com.sap.nextgen.vlm.api.CorpOverviewDataApiV3;
 import com.sap.nextgen.vlm.constants.DataEndpoint;
 import com.sap.nextgen.vlm.providers.DataProvider;
-import com.sap.nextgen.vlm.providers.mtn.CloudTransactionsS4HanaAdrmProvider;
+import com.sap.nextgen.vlm.providers.mtn.GetMTNSearchResultsProvider;
 
-import io.swagger.annotations.ExternalDocs;
-import io.swagger.annotations.Info;
-import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.v3.jaxrs2.ext.OpenAPIExtensions;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 
 
-@SwaggerDefinition(
+@OpenAPIDefinition(
         info = @Info(
                 description = "Corp Overview Custom Data Backend",
                 version = "1.0",
                 title = "Corp Overview Backend"),
-
-        consumes = {"application/json"},
-        produces = {"application/json"},
-        schemes = {SwaggerDefinition.Scheme.HTTPS},
-        basePath = "/api",
-        externalDocs = @ExternalDocs(value = "GitHub", url = "https://github.wdf.sap.corp/customer-insights/corporate-overview-backend")
+        externalDocs = @ExternalDocumentation(description = "GitHub", url = "https://github.wdf.sap.corp/customer-insights/corporate-overview-backend")
 )
 @ApplicationPath("/api")
 public class JerseyApplication extends ResourceConfig {
@@ -109,7 +103,7 @@ public class JerseyApplication extends ResourceConfig {
             //bindFactory(PasswordStorageFactory.class).to(PasswordStorage.class).in(Singleton.class);
             //bind(RemoteQuerySettingsFactory.class).to(RemoteQuerySettingsFactory.class).in(Singleton.class);
         
-            bind(CloudTransactionsS4HanaAdrmProvider.class).to(DataProvider.class).named(DataEndpoint.CLOUD_TRANSACTIONS_SALES_ADRM_S4.name()).in(Singleton.class);
+            bind(GetMTNSearchResultsProvider.class).to(DataProvider.class).named(DataEndpoint.GET_COMPANY_SEARCH_RESULTS.name()).in(Singleton.class);
            
         }
     }

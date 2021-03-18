@@ -30,10 +30,9 @@ public class HelloWorldServlet extends HttpServlet
     {
         logger.info("I am running!");
         AccessToken token = (AccessToken) request.getUserPrincipal();
+        
 		try {
-			response.getWriter().write("You ('"
-					+ token.getClaimAsString(TokenClaims.EMAIL) + "') "
-					+ "are authenticated and can access the application.");
+			response.getWriter().write(token.getTokenValue());
 		} catch (final IOException e) {
 			logger.error("Failed to write error response: " + e.getMessage() + ".", e);
 		}

@@ -98,7 +98,7 @@
         <dependency>
             <groupId>com.sap.ida.eacp.nucleus</groupId>
             <artifactId>nucleus-data-client</artifactId>
-            <version>1.0.15</version>
+            <version>3.0.3</version>
         </dependency>
 
         <dependency>
@@ -117,6 +117,7 @@
             <artifactId>eacp-jersey-test</artifactId>
             <scope>test</scope>
         </dependency>
+        
 
         <dependency>
             <groupId>com.tngtech.java</groupId>
@@ -143,7 +144,10 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <!-- Lombok -->
-
+		<dependency>
+    		<groupId>org.apache.httpcomponents</groupId>
+    		<artifactId>httpclient</artifactId>
+		</dependency>
 
         <!-- Test -->
 

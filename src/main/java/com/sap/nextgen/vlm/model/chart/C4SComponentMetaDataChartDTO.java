@@ -1,6 +1,6 @@
 package com.sap.nextgen.vlm.model.chart;
 
-import com.sap.ida.eacp.nucleus.data.client.model.response.V1C4sComponentMetadataDTO;
+import com.sap.ida.eacp.nucleus.data.client.model.response.data.V1C4sComponentMetadataDTO;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -8,5 +8,5 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class C4SComponentMetaDataChartDTO extends V1C4sComponentMetadataDTO {
 
-    String type;
+    String chartType;
 }

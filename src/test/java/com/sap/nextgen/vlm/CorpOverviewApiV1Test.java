@@ -1,28 +1,30 @@
 package com.sap.nextgen.vlm;
 
-import com.google.common.collect.Lists;
-import com.sap.nextgen.vlm.constants.DataEndpoint;
-import com.sap.ida.eacp.nucleus.data.client.model.request.DataRequestBody;
-import com.sap.ida.eacp.nucleus.data.client.model.response.V1C4sComponentDTO;
-import org.junit.Test;
+import static com.sap.it.mobile.hcp.hamcrest.HttpMatchers.isOk;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.sap.it.mobile.hcp.hamcrest.HttpMatchers.isOk;
-import static org.hamcrest.MatcherAssert.assertThat;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Response;
+
+import org.junit.Test;
+
+import com.google.common.collect.Lists;
+import com.sap.ida.eacp.nucleus.data.client.model.request.DataRequestBody;
+import com.sap.ida.eacp.nucleus.data.client.model.response.data.ResponseComponentDTO;
+import com.sap.nextgen.vlm.constants.DataEndpoint;
 
 public class CorpOverviewApiV1Test extends APITest {
 
-    //@Test
+    @Test
     public void testTransactionsSalesADRM() {
         mockResponseSequence("/response/TransactionsSalesADRMCloud.json");
 
         Map<String, List<String>> queryParams = new HashMap<>();
-        //queryParams.put("isChart", Lists.newArrayList("true"));
+        queryParams.put("searchTerm", Lists.newArrayList("SAP%20SE"));
 
         final DataRequestBody dataRequestBody = new DataRequestBody();
         dataRequestBody.setQueryParams(queryParams);
@@ -31,13 +33,13 @@ public class CorpOverviewApiV1Test extends APITest {
                 .path("apps/cicorpoverview")
                 .path("roles/Display")
                 .path("resources")
-                .path(DataEndpoint.CLOUD_TRANSACTIONS_SALES_ADRM_S4.toString())
+                .path(DataEndpoint.GET_COMPANY_SEARCH_RESULTS.toString())
                 .request()
-                .post(Entity.json(null));
+                .post(Entity.json(dataRequestBody));
         
         assertThat(response, isOk());
 
-        final V1C4sComponentDTO c4sComponentDTO = response.readEntity(V1C4sComponentDTO.class);
+        final ResponseComponentDTO c4sComponentDTO = response.readEntity(ResponseComponentDTO.class);
 
     }
 

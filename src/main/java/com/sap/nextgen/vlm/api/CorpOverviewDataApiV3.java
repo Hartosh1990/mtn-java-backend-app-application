@@ -21,22 +21,24 @@ import com.sap.cloud.security.token.AccessToken;
 import com.sap.cloud.security.token.TokenClaims;
 import com.sap.ea.nga.jersey.provider.jackson.ObjectMapperProvider;
 //import com.sap.ida.eacp.ci.co.togglz.FeatureToggle;
-import com.sap.ida.eacp.nucleus.data.client.V3NucleusDataAPI;
-import com.sap.ida.eacp.nucleus.data.client.mapper.V1C4sMapper;
+import com.sap.ida.eacp.nucleus.data.client.api.V3NucleusDataAPI;
+import com.sap.ida.eacp.nucleus.data.client.mapper.ResponseComponentMapper;
 import com.sap.ida.eacp.nucleus.data.client.model.request.DataRequestBody;
 import com.sap.ida.eacp.nucleus.data.client.model.request.ResultContainer;
-import com.sap.ida.eacp.nucleus.data.client.model.response.V1C4sComponentDTO;
+import com.sap.ida.eacp.nucleus.data.client.model.response.data.ResponseComponentDTO;
 import com.sap.nextgen.vlm.constants.DataEndpoint;
 import com.sap.nextgen.vlm.providers.DataProvider;
 
-import io.swagger.annotations.ApiParam;
+
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 
 @Path("/")
 @Produces("application/json")
 @PermitAll
 public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
-
+	
     @Inject
     private IterableProvider<DataProvider> dataProvider;
 
@@ -46,23 +48,9 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
     private static final Logger LOG = LoggerFactory.getLogger(CorpOverviewDataApiV3.class);
 
     @Override
-    public V1C4sComponentDTO getData(@ApiParam(example = "cloud_transactions_sales_adrm",
-            allowableValues = "cloud_transactions_sales_adrm," +
-                    " cloud_transactions_sales_adrm_by_region," +
-                    " cloud_transactions_sales_adrm_by_salesbag," +
-                    " cloud_transactions_sales_deals," +
-                    " software_transactions_sales_adrm," +
-                    " software_transactions_sales_adrm_by_region," +
-                    " software_transactions_sales_adrm_by_salesbag," +
-                    " software_transactions_sales_deals," +
-                    " strategic_renewals_analysis," +
-                    " strategic_renewals_analysis_totals," +
-                    " strategic_renewals_analysis_items," +
-                    " strategic_total_escalations," +
-                    " cloud_transactions_sales_adrm_s4," +
-                    " software_transactions_sales_adrm_s4," +
-                    " strategic_escalations_by_process_type," +
-                    " strategic_escalations_by_customer"
+    public ResponseComponentDTO getData(@Parameter(example = "cloud_transactions_sales_adrm")@Schema(
+            allowableValues = "cloud_transactions_sales_adrm_s4," +
+            				  "get_company_search_results"
     ) String appId,String role,String resourceId, Boolean useMock,Long variantId, DataRequestBody requestBody) throws Exception {
 
         try {
@@ -89,7 +77,7 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
                 .orElseThrow(() -> new InternalServerErrorException("There exists no data provider for the data endpoint " + dataEndpoint.name()));
 
         if (useMock) {
-            return new V1C4sComponentDTO();
+            return new ResponseComponentDTO();
         }
 
         //final Map<String, List<String>> queryParams = requestBody.getQueryParams();
@@ -110,7 +98,7 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
         final ResultContainer result = dataProvider.loadData(requestBody);
 
 
-        final V1C4sComponentDTO c4sComponentDTO = V1C4sMapper.fromResultRmo(result.getData(), result.getClz());
+        final ResponseComponentDTO c4sComponentDTO = ResponseComponentMapper.fromResultRmo(result.getData(), result.getClz());
 
 //        if (queryParams.containsKey("isChart")) {
 //            if ("true".equals(queryParams.get("isChart").get(0))) {
