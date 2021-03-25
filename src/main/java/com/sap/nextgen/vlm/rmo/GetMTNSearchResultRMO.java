@@ -3,6 +3,8 @@ package com.sap.nextgen.vlm.rmo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sap.ida.eacp.nucleus.data.client.annotation.Dimension;
 import com.sap.ida.eacp.nucleus.data.client.annotation.Measure;
+import com.sap.ida.eacp.nucleus.data.client.model.response.data.DataType;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -17,10 +19,10 @@ public class GetMTNSearchResultRMO {
 
     @JsonProperty(VALUE)
     @Dimension(label="Company Name")
-    private String value;
+    private String companyName;
 
     @JsonProperty(CIQ_ID)
-    @Measure(label="CIQ ID")
+    @Dimension(label="CIQ ID")
     private String ciq_id;
-
+    
 }

@@ -1,6 +1,10 @@
 package com.sap.nextgen.vlm.api;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.security.PermitAll;
@@ -17,6 +21,7 @@ import org.glassfish.hk2.api.IterableProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
 import com.sap.cloud.security.token.AccessToken;
 import com.sap.cloud.security.token.TokenClaims;
 import com.sap.ea.nga.jersey.provider.jackson.ObjectMapperProvider;
@@ -28,7 +33,7 @@ import com.sap.ida.eacp.nucleus.data.client.model.request.ResultContainer;
 import com.sap.ida.eacp.nucleus.data.client.model.response.data.ResponseComponentDTO;
 import com.sap.nextgen.vlm.constants.DataEndpoint;
 import com.sap.nextgen.vlm.providers.DataProvider;
-
+import com.sap.nextgen.vlm.utils.JWTTokenFactory;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -41,11 +46,13 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
 	
     @Inject
     private IterableProvider<DataProvider> dataProvider;
+    JWTTokenFactory jwtTokenFactory;
 
     @Context
     SecurityContext securityContext;
     
     private static final Logger LOG = LoggerFactory.getLogger(CorpOverviewDataApiV3.class);
+    String type = "employee";
 
     @Override
     public ResponseComponentDTO getData(@Parameter(example = "cloud_transactions_sales_adrm")@Schema(
@@ -58,12 +65,30 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
             
             AccessToken token = (AccessToken)securityContext.getUserPrincipal();
     		try {
-    			System.out.println("Token Email:" + token.getClaimAsString(TokenClaims.EMAIL) + "Token INumber " + token.getClaimAsString(TokenClaims.USER_NAME) );	
+    			if(token == null) {
+    				if(requestBody.getQueryParams() != null && requestBody.getQueryParams().get("jwtToken") != null) {
+    					// Should not throw exception as to test it with jwtToken.
+    				}else {
+    					throw new BadRequestException("The token is not coming from intwo");
+    				}
+    			}else {
+    				String jwtToken = jwtTokenFactory.getJWTToken(token.getClaimAsString(TokenClaims.USER_NAME), token.getClaimAsString(TokenClaims.EMAIL), token.getClaimAsString(TokenClaims.GIVEN_NAME), token.getClaimAsString(TokenClaims.FAMILY_NAME), type);
+    				System.out.println("Token Email:" + token.getClaimAsString(TokenClaims.EMAIL) + "Token INumber " + token.getClaimAsString(TokenClaims.USER_NAME) );	
+    				// For each request add token to the request body.
+    				if (requestBody.getQueryParams() == null ) {
+    					Map<String, List<String>> queryParams = new HashMap<>();
+        				queryParams.put("jwtToken", List.of(jwtToken));
+        				requestBody.setQueryParams(queryParams);	
+    				}else {
+    					requestBody.getQueryParams().put("jwtToken", List.of(jwtToken));
+    				}
+    				
+    			}
     		} catch (Exception e) {
     			LOG.error("Failed to write error response: " + e.getMessage() + ".", e);
     		}
         } catch (Exception e) {
-            // ignore
+        	//e.printStackTrace(); // Will be calling logging...
         }
 
         final DataEndpoint dataEndpoint;
@@ -80,47 +105,11 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
             return new ResponseComponentDTO();
         }
 
-        //final Map<String, List<String>> queryParams = requestBody.getQueryParams();
-//        if (FeatureToggle.FREEZE_QUARTER.isActive()) {
-//            YearQuarter quarter = YearQuarter.now().minusQuarters(1);
-//            YearQuarter prevYearQuarter = quarter.minusYears(1);
-//            final HashMap<String, List<String>> additionalQueryParams = new HashMap<>();
-//            additionalQueryParams.put("quarter", Lists.newArrayList(quarter.toString()));
-//            additionalQueryParams.put("prevYearQuarter", Lists.newArrayList(prevYearQuarter.toString()));
-//
-//            if (Objects.isNull(queryParams)) {
-//                requestBody.setQueryParams(additionalQueryParams);
-//            } else {
-//                queryParams.putAll(additionalQueryParams);
-//            }
-//        }
 
         final ResultContainer result = dataProvider.loadData(requestBody);
 
 
         final ResponseComponentDTO c4sComponentDTO = ResponseComponentMapper.fromResultRmo(result.getData(), result.getClz());
-
-//        if (queryParams.containsKey("isChart")) {
-//            if ("true".equals(queryParams.get("isChart").get(0))) {
-//
-//                C4SComponentMetaDataChartDTO c4SComponentMetaDataChartDTO = (C4SComponentMetaDataChartDTO) new C4SComponentMetaDataChartDTO()
-//                        .setId(c4sComponentDTO.getMetadata().getId())
-//                        .setLabels(c4sComponentDTO.getMetadata().getLabels())
-//                        .setTitle(c4sComponentDTO.getMetadata().getTitle());
-//
-//                String chartType = "COLUMN_CHART";
-//
-//                if (queryParams.containsKey("chartType")) {
-//                    chartType = queryParams.get("chartType").get(0);
-//                }
-//                c4SComponentMetaDataChartDTO.setType(chartType);
-//
-//                c4sComponentDTO.setMetadata(c4SComponentMetaDataChartDTO);
-//            }
-//
-//
-//        }
-
         return c4sComponentDTO;
     }
 }
