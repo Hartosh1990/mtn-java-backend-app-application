@@ -1,14 +1,11 @@
 package com.sap.nextgen.vlm.api;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
@@ -24,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
 import com.sap.cloud.security.token.AccessToken;
 import com.sap.cloud.security.token.TokenClaims;
-import com.sap.ea.nga.jersey.provider.jackson.ObjectMapperProvider;
 //import com.sap.ida.eacp.ci.co.togglz.FeatureToggle;
 import com.sap.ida.eacp.nucleus.data.client.api.V3NucleusDataAPI;
 import com.sap.ida.eacp.nucleus.data.client.mapper.ResponseComponentMapper;
@@ -77,10 +73,10 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
     				// For each request add token to the request body.
     				if (requestBody.getQueryParams() == null ) {
     					Map<String, List<String>> queryParams = new HashMap<>();
-        				queryParams.put("jwtToken", List.of(jwtToken));
+        				queryParams.put("jwtToken", Lists.newArrayList(jwtToken));
         				requestBody.setQueryParams(queryParams);	
     				}else {
-    					requestBody.getQueryParams().put("jwtToken", List.of(jwtToken));
+    					requestBody.getQueryParams().put("jwtToken", Lists.newArrayList(jwtToken));
     				}
     				
     			}
