@@ -24,7 +24,7 @@ public class CorpOverviewApiV1Test extends APITest {
         mockResponseSequence("/response/TransactionsSalesADRMCloud.json");
 
         Map<String, List<String>> queryParams = new HashMap<>();
-        queryParams.put("searchTerm", Lists.newArrayList("SAP%20SE"));
+        queryParams.put("searchTerm", Lists.newArrayList("SAP SE"));
 
         final DataRequestBody dataRequestBody = new DataRequestBody();
         dataRequestBody.setQueryParams(queryParams);

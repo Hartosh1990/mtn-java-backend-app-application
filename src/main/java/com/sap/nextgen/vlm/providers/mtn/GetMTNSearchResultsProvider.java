@@ -1,6 +1,10 @@
 package com.sap.nextgen.vlm.providers.mtn;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.io.UnsupportedEncodingException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +38,13 @@ public class GetMTNSearchResultsProvider extends AbstractProvider implements Dat
         return DataEndpoint.GET_COMPANY_SEARCH_RESULTS;
     }
 
+    private static String encodeValue(String value) {
+        try {
+            return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException(ex.getCause());
+        }
+    }
     @SuppressWarnings("finally")
 	@Override
     public ResultContainer<GetMTNSearchResultRMO> loadData(DataRequestBody requestBody) {
@@ -46,8 +57,10 @@ public class GetMTNSearchResultsProvider extends AbstractProvider implements Dat
         final List<GetMTNSearchResultRMO> data = new ArrayList<GetMTNSearchResultRMO>();
         
         CloseableHttpClient httpclient = HttpClients.createDefault();
-    	
-    	HttpGet get = new HttpGet(baseUri +"/services/getMtnSearchResults?langId=10&pageOffset=0&clientProcessId=20210304140829nlmahf2b65s6&seqNo=8&searchTerm="+searchTerm);
+
+        String encodedSearchTerm = encodeValue(searchTerm); // Encoding a query string
+        
+    	HttpGet get = new HttpGet(baseUri +"/services/getMtnSearchResults?langId=10&pageOffset=0&clientProcessId=20210304140829nlmahf2b65s6&seqNo=8&searchTerm="+encodedSearchTerm);
     	get.setHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
     	get.setHeader("x-auth-token", token);
     	
