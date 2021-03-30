@@ -72,6 +72,35 @@ public class CorpOverviewApiV1Test extends APITest {
     }
     
     @Test
+    public void saveMtnCompanyTest() {
+        mockResponseSequence("/response/TransactionsSalesADRMCloud.json");
+        JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
+    	String token = jwtTokenFactory.getJWTToken("I303399", "hartosh.singh.bugra@sap.com", "Hartosh Singh", "Bugra", "employee");
+        Map<String, List<String>> queryParams = new HashMap<>();
+        queryParams.put("mtnId", Lists.newArrayList("null"));
+        queryParams.put("ciqId", Lists.newArrayList("IQ126475"));
+        queryParams.put("companyName", Lists.newArrayList("SAP SE"));
+        queryParams.put("isMtnCompany", Lists.newArrayList("1"));
+        queryParams.put("jwtToken", Lists.newArrayList(token));
+        final DataRequestBody dataRequestBody = new DataRequestBody();
+        dataRequestBody.setQueryParams(queryParams);
+
+        final Response response = target("v3/nucleus/data")
+                .path("apps/cicorpoverview")
+                .path("roles/Display")
+                .path("resources")
+                .path(DataEndpoint.SAVE_MTN_COMPANY.toString())
+                .request()
+                .post(Entity.json(dataRequestBody));
+        
+        assertThat(response, isOk());
+
+        final ResponseComponentDTO c4sComponentDTO = response.readEntity(ResponseComponentDTO.class);
+
+    	
+    }
+    
+    @Test
     public void testJWTTokenFactory() throws ClientProtocolException, IOException {
     	
     	JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();

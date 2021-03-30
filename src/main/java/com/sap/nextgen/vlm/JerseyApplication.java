@@ -30,6 +30,7 @@ import com.sap.nextgen.vlm.api.CorpOverviewDataApiV3;
 import com.sap.nextgen.vlm.constants.DataEndpoint;
 import com.sap.nextgen.vlm.providers.DataProvider;
 import com.sap.nextgen.vlm.providers.mtn.GetMTNSearchResultsProvider;
+import com.sap.nextgen.vlm.providers.mtn.SaveMTNCompanyProvider;
 import com.sap.nextgen.vlm.utils.JWTTokenFactory;
 
 import io.swagger.v3.jaxrs2.ext.OpenAPIExtensions;
@@ -79,6 +80,7 @@ public class JerseyApplication extends ResourceConfig {
             bind(OkHttpDestinationFactory.class).to(OkHttpDestinationFactory.class).in(Singleton.class);
             bindFactory(ObjectMapperFactory.class).to(ObjectMapper.class).in(Singleton.class);        
             bind(GetMTNSearchResultsProvider.class).to(DataProvider.class).named(DataEndpoint.GET_COMPANY_SEARCH_RESULTS.name()).in(Singleton.class);
+            bind(SaveMTNCompanyProvider.class).to(DataProvider.class).named(DataEndpoint.SAVE_MTN_COMPANY.name()).in(Singleton.class);
             bind(JWTTokenFactory.class).in(Singleton.class);
         }
     }
