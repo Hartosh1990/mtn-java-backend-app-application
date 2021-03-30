@@ -37,12 +37,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Path("/")
 @Produces("application/json")
-@PermitAll
 public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
 	
     @Inject
     private IterableProvider<DataProvider> dataProvider;
-    JWTTokenFactory jwtTokenFactory;
+    
+    @Inject
+    private JWTTokenFactory jwtTokenFactory;
 
     @Context
     SecurityContext securityContext;
@@ -58,19 +59,21 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
     ) String appId,String role,String resourceId, Boolean useMock,Long variantId, DataRequestBody requestBody) throws Exception {
 
         try {
-            
-            
+        	System.out.println(jwtTokenFactory.getId());
+            System.out.println(securityContext.getUserPrincipal());
             AccessToken token = (AccessToken)securityContext.getUserPrincipal();
     		try {
     			if(token == null) {
+    				System.out.println("The token is null");
+    				
     				if(requestBody.getQueryParams() != null && requestBody.getQueryParams().get("jwtToken") != null) {
     					// Should not throw exception as to test it with jwtToken.
     				}else {
     					throw new BadRequestException("The token is not coming from intwo");
     				}
     			}else {
-    				String jwtToken = jwtTokenFactory.getJWTToken(token.getClaimAsString(TokenClaims.USER_NAME), token.getClaimAsString(TokenClaims.EMAIL), token.getClaimAsString(TokenClaims.GIVEN_NAME), token.getClaimAsString(TokenClaims.FAMILY_NAME), type);
-    				System.out.println("Token Email:" + token.getClaimAsString(TokenClaims.EMAIL) + "Token INumber " + token.getClaimAsString(TokenClaims.USER_NAME) );	
+    				System.out.println("Token Email:" + token.getClaimAsString(TokenClaims.EMAIL) + "Token INumber " + token.getClaimAsString(TokenClaims.USER_NAME) );
+    				String jwtToken = jwtTokenFactory.getJWTToken(token.getClaimAsString(TokenClaims.USER_NAME), token.getClaimAsString(TokenClaims.EMAIL), token.getClaimAsString(TokenClaims.GIVEN_NAME), token.getClaimAsString(TokenClaims.FAMILY_NAME), type);	
     				// For each request add token to the request body.
     				if (requestBody.getQueryParams() == null ) {
     					Map<String, List<String>> queryParams = new HashMap<>();
@@ -82,9 +85,11 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
     				
     			}
     		} catch (Exception e) {
+    			System.out.println(e.getMessage());
     			LOG.error("Failed to write error response: " + e.getMessage() + ".", e);
     		}
         } catch (Exception e) {
+        	System.out.println(e.getMessage());
         	//e.printStackTrace(); // Will be calling logging...
         }
 

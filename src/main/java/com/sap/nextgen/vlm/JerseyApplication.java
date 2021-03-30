@@ -7,8 +7,6 @@ import java.util.TimeZone;
 
 import javax.inject.Singleton;
 import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.SecurityContext;
 
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -17,8 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sap.cloud.security.token.AccessToken;
-import com.sap.cloud.security.token.TokenClaims;
 import com.sap.ea.eacp.okhttp.destinationclient.OkHttpDestinationFactory;
 import com.sap.ea.nga.jersey.filter.sapstatistics.SapStatisticsExtension;
 import com.sap.ea.nga.jersey.filter.servertiming.ServerTimingExtension;
@@ -81,7 +77,7 @@ public class JerseyApplication extends ResourceConfig {
             bindFactory(ObjectMapperFactory.class).to(ObjectMapper.class).in(Singleton.class);        
             bind(GetMTNSearchResultsProvider.class).to(DataProvider.class).named(DataEndpoint.GET_COMPANY_SEARCH_RESULTS.name()).in(Singleton.class);
             bind(SaveMTNCompanyProvider.class).to(DataProvider.class).named(DataEndpoint.SAVE_MTN_COMPANY.name()).in(Singleton.class);
-            bind(JWTTokenFactory.class).in(Singleton.class);
+            bindAsContract(JWTTokenFactory.class).in(Singleton.class);
         }
     }
 }

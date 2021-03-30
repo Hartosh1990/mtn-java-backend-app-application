@@ -1,17 +1,14 @@
 package com.sap.nextgen.vlm.providers.mtn;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.io.UnsupportedEncodingException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import javax.inject.Inject;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -29,7 +26,6 @@ import com.sap.nextgen.vlm.constants.DataEndpoint;
 import com.sap.nextgen.vlm.providers.AbstractProvider;
 import com.sap.nextgen.vlm.providers.DataProvider;
 import com.sap.nextgen.vlm.rmo.GetMTNSearchResultRMO;
-import com.sap.nextgen.vlm.utils.JWTTokenFactory;
 
 
 public class GetMTNSearchResultsProvider extends AbstractProvider implements DataProvider<GetMTNSearchResultRMO> {
@@ -59,6 +55,7 @@ public class GetMTNSearchResultsProvider extends AbstractProvider implements Dat
     	}
     	if (queryParams.containsKey("jwtToken")) {
     		jwtToken = requestBody.getQueryParams().get("jwtToken").get(0);
+    		System.out.println(jwtToken);
     	}
 
         final List<GetMTNSearchResultRMO> data = new ArrayList<GetMTNSearchResultRMO>();
