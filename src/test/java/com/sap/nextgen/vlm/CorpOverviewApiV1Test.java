@@ -2,13 +2,17 @@ package com.sap.nextgen.vlm;
 
 import static com.sap.it.mobile.hcp.hamcrest.HttpMatchers.isOk;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 
+import javax.inject.Inject;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
@@ -31,8 +35,12 @@ import com.google.common.collect.Lists;
 import com.sap.ida.eacp.nucleus.data.client.model.request.DataRequestBody;
 import com.sap.ida.eacp.nucleus.data.client.model.response.data.ResponseComponentDTO;
 import com.sap.nextgen.vlm.constants.DataEndpoint;
+import com.sap.nextgen.vlm.constants.VlmConstants;
 import com.sap.nextgen.vlm.rmo.GetMTNSearchResultRMO;
+import com.sap.nextgen.vlm.rmo.MasterDataGenericRMO;
+import com.sap.nextgen.vlm.utils.CacheManager;
 import com.sap.nextgen.vlm.utils.JWTTokenFactory;
+import com.sap.nextgen.vlm.utils.MasterPackageKey;
 
 public class CorpOverviewApiV1Test extends APITest {
 
@@ -103,7 +111,7 @@ public class CorpOverviewApiV1Test extends APITest {
     }
     
     @Test
-    public void testEcacheLib() throws ExecutionException, ClientProtocolException, IOException {
+    public void testGoogleCacaheLibraray() throws ExecutionException, ClientProtocolException, IOException {
     	
     	// Get the search result //
     	
@@ -127,11 +135,25 @@ public class CorpOverviewApiV1Test extends APITest {
         
     	 LoadingCache<String, List<GetMTNSearchResultRMO>> metadata = CacheBuilder.newBuilder()
     			       .build(loader);
-    	 System.out.println(metadata.get("test"));
-    	 System.out.println(metadata.get("test"));
-    	 System.out.println(metadata.get("test"));
-    	 System.out.println(metadata.get("test"));
+    	 metadata.get("test");metadata.get("test");metadata.get("test");metadata.get("test");
+    	 assertTrue("The data is being faetched only for one time" ,metadata.size() == 1);
     	 
-    	 
+    }
+    
+    @Test
+    public void testCacheManager() throws ExecutionException, ClientProtocolException, IOException {
+    	
+    	 CacheManager<Object,Object> cm = new CacheManager<Object,Object>();
+    	 MasterPackageKey currencyMpk = new MasterPackageKey();
+    	 currencyMpk.setLangId(10);
+    	 currencyMpk.setListName("CurrencyData");
+    	 currencyMpk.setPackageId(30);
+    	 currencyMpk.setPackVer(0);
+    	 cm.getCachedObjects(currencyMpk);cm.getCachedObjects(currencyMpk);cm.getCachedObjects(currencyMpk);cm.getCachedObjects(currencyMpk);
+    	 cm.getCachedObjects(VlmConstants.bcIndustry.toString());cm.getCachedObjects(VlmConstants.bcIndustry.toString());
+    	 //System.out.println(cm.getCacheHitCount());
+    	 assertThat("cache should be hit 4 times as there total 6 calls with 2 keys so 6-2=4",cm.getCacheHitCount() == 4);
+    	 assertThat("US Dollar Currency is coming at index 0",Integer.parseInt((((List<MasterDataGenericRMO>)cm.getCachedObjects(currencyMpk)).get(0).getId())) == 137);
+    	 assertThat("cache should be hit 5 times as there total 7 calls with 2 keys so 7-2=5",cm.getCacheHitCount() == 5);
     }
    }

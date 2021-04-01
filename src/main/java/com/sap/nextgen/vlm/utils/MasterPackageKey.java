@@ -1,5 +1,8 @@
 package com.sap.nextgen.vlm.utils;
 
+import lombok.Data;
+
+@Data
 public class MasterPackageKey{
 	int langId;
 	int packVer;
@@ -20,5 +23,9 @@ public class MasterPackageKey{
 				Integer.compare(this.packageId, mpk.packageId) == 0 &&
 				Integer.compare(this.packVer, mpk.packVer) == 0;
 	}
-	
+	@Override
+	public int hashCode() {
+		return packageId;
+		
+	}
 }

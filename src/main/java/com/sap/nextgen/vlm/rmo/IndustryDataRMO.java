@@ -9,13 +9,13 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @JsonIgnoreProperties(
-value = {"Order","version","approve"}
+value = {"id"}
 )
-public class MasterDataGenericRMO {
+public class IndustryDataRMO {
 
 
-    public static final String FIELD_ID = "ID";
-    public static final String NAME = "Name";
+    public static final String FIELD_ID = "code";
+    public static final String NAME = "desc";
 
 
     @JsonProperty(FIELD_ID)

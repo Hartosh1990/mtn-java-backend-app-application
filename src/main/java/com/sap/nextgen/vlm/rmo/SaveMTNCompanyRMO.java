@@ -2,7 +2,6 @@ package com.sap.nextgen.vlm.rmo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.sap.ida.eacp.nucleus.data.client.annotation.Dimension;
 
 import lombok.Data;

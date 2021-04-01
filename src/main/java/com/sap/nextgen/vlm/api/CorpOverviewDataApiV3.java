@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.InternalServerErrorException;
