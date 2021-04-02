@@ -8,6 +8,7 @@ public class MasterPackageKey{
 	int packVer;
 	int packageId;
 	String listName;
+	String firstChildLevelName;
 	
 	@Override
 	public boolean equals(Object masterPackage) {

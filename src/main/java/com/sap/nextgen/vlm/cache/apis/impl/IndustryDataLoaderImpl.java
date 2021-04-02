@@ -1,8 +1,8 @@
 package com.sap.nextgen.vlm.cache.apis.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -33,14 +33,15 @@ public class IndustryDataLoaderImpl<K,V> implements ICacheServiceLoader<K, V> {
 		  String response = EntityUtils.toString(httpResponse.getEntity());
 		  ObjectMapper mapper = new ObjectMapper();
 		  JsonNode root = mapper.readTree(response);
-		  List<IndustryDataRMO> industryDataList = new ArrayList<IndustryDataRMO>();
+		  Map<String,IndustryDataRMO> industryDataList = new HashMap<String,IndustryDataRMO>();
 		  
 		  if(root.get("results") != null) {
 			 JsonNode metadataList = root.get("results");  
 			 if(metadataList.isArray()) {
 				 System.out.print("This is an array");
 				 for(JsonNode metadataData : metadataList) {
-					 industryDataList.add(mapper.treeToValue(metadataData,IndustryDataRMO.class));
+					 IndustryDataRMO indRMO = mapper.treeToValue(metadataData,IndustryDataRMO.class);
+					 industryDataList.put(indRMO.getId(),indRMO);
 				 }
 			 }
 		  }

@@ -153,7 +153,32 @@ public class CorpOverviewApiV1Test extends APITest {
     	 cm.getCachedObjects(VlmConstants.bcIndustry.toString());cm.getCachedObjects(VlmConstants.bcIndustry.toString());
     	 //System.out.println(cm.getCacheHitCount());
     	 assertThat("cache should be hit 4 times as there total 6 calls with 2 keys so 6-2=4",cm.getCacheHitCount() == 4);
-    	 assertThat("US Dollar Currency is coming at index 0",Integer.parseInt((((List<MasterDataGenericRMO>)cm.getCachedObjects(currencyMpk)).get(0).getId())) == 137);
+    	 assertThat("US Dollar Currency is coming at index 0",((Map<String,MasterDataGenericRMO>)cm.getCachedObjects(currencyMpk)).containsKey("137"));
     	 assertThat("cache should be hit 5 times as there total 7 calls with 2 keys so 7-2=5",cm.getCacheHitCount() == 5);
+    }
+    
+    @Test
+    public void testGetMTNCompanyProfile() {
+        mockResponseSequence("/response/TransactionsSalesADRMCloud.json");
+        JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
+    	String token = jwtTokenFactory.getJWTToken("I303399", "hartosh.singh.bugra@sap.com", "Hartosh Singh", "Bugra", "employee");
+        Map<String, List<String>> queryParams = new HashMap<>();
+        queryParams.put("mtnId", Lists.newArrayList("2268"));
+        queryParams.put("jwtToken", Lists.newArrayList(token));
+        final DataRequestBody dataRequestBody = new DataRequestBody();
+        dataRequestBody.setQueryParams(queryParams);
+
+        final Response response = target("v3/nucleus/data")
+                .path("apps/cicorpoverview")
+                .path("roles/Display")
+                .path("resources")
+                .path(DataEndpoint.GET_MTN_COMPANY_PROFILE.toString())
+                .request()
+                .post(Entity.json(dataRequestBody));
+        
+        assertThat(response, isOk());
+
+        final ResponseComponentDTO c4sComponentDTO = response.readEntity(ResponseComponentDTO.class);
+
     }
    }

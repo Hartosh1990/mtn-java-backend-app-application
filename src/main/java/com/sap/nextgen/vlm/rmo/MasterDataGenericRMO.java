@@ -1,5 +1,8 @@
 package com.sap.nextgen.vlm.rmo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -23,5 +26,7 @@ public class MasterDataGenericRMO {
 
     @JsonProperty(NAME)
     private String name;
+    
+    private Map<String,String> childLevel = new HashMap<String, String>();
     
 }

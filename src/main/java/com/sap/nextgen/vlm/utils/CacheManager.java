@@ -19,6 +19,7 @@ import com.sap.nextgen.vlm.rmo.MasterDataGenericRMO;
 
 public class CacheManager<K,V> {
 	
+	private static CacheManager singletonInstance;
 	
 	ICacheServiceLoader<MasterPackageKey, List<MasterDataGenericRMO>> masterDataLoader = new MasterDataLoaderImpl<MasterPackageKey, List<MasterDataGenericRMO>>();
 	ICacheServiceLoader<String, List<IndustryDataRMO>> industryDataLoader = new IndustryDataLoaderImpl<String, List<IndustryDataRMO>>();
@@ -43,7 +44,22 @@ public class CacheManager<K,V> {
 	public long getCacheHitCount() {
 		return metadata.stats().hitCount();
 	}
-
+	
+	public MasterPackageKey getDefaultMasterPackageKey(int packId,String listName) {
+		MasterPackageKey mpk = new MasterPackageKey();
+		mpk.setLangId(10); // As of now only english
+		mpk.setListName(listName);
+		mpk.setPackVer(0); // As it will always give latest data.
+		mpk.setPackageId(packId);
+		return mpk;
+	}
+	
+	public static CacheManager getInstance() {
+		if(singletonInstance == null) {
+			singletonInstance = new CacheManager();
+		}
+		return singletonInstance;
+	}
 	
 }
 	

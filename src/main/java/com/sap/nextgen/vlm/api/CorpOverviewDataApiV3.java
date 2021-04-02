@@ -54,7 +54,8 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
     public ResponseComponentDTO getData(@Parameter(example = "cloud_transactions_sales_adrm")@Schema(
             allowableValues = "cloud_transactions_sales_adrm_s4," +
             				  "get_company_search_results," + 
-            				  "save_mtn_company"
+            				  "save_mtn_company,"+
+            				  "get_mtn_company_profile"
     ) String appId,String role,String resourceId, Boolean useMock,Long variantId, DataRequestBody requestBody) throws Exception {
 
         try {
