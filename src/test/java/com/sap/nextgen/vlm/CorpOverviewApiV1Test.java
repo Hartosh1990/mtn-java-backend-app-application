@@ -158,6 +158,29 @@ public class CorpOverviewApiV1Test extends APITest {
     }
     
     @Test
+ public void testMTNDashboard() {
+        mockResponseSequence("/response/TransactionsSalesADRMCloud.json");
+
+        Map<String, List<String>> queryParams = new HashMap<>();
+        
+
+        final DataRequestBody dataRequestBody = new DataRequestBody();
+        dataRequestBody.setQueryParams(queryParams);
+
+        final Response response = target("v3/nucleus/data")
+                .path("apps/cicorpoverview")
+                .path("roles/Display")
+                .path("resources")
+                .path(DataEndpoint.MTN_DASHBOARD_DATA.toString())
+                .request()
+                .post(Entity.json(dataRequestBody));
+        
+        assertThat(response, isOk());
+
+        final ResponseComponentDTO c4sComponentDTO = response.readEntity(ResponseComponentDTO.class);
+
+    }
+    @Test
     public void testGetMTNCompanyProfile() {
         mockResponseSequence("/response/TransactionsSalesADRMCloud.json");
         JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
