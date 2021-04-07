@@ -15,6 +15,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sap.ecm.api.RepositoryNotEmptyException;
 import com.sap.ida.eacp.nucleus.data.client.model.request.DataRequestBody;
 import com.sap.ida.eacp.nucleus.data.client.model.request.ResultContainer;
 import com.sap.nextgen.vlm.constants.DataEndpoint;
@@ -59,9 +60,12 @@ public class MTNCompanyProfileProvider extends AbstractProvider implements DataP
 			httpResponse = httpclient.execute(get);
 			String response = EntityUtils.toString(httpResponse.getEntity());
 		    ObjectMapper mapper = new ObjectMapper();
-			JsonNode root = mapper.readTree(response); 
+		    JsonNode root = mapper.readTree(response); 
 			JsonNode companyProfileObject = root.get("results");
+			System.out.println(companyProfileObject);
 			data.add(mapper.treeToValue(companyProfileObject, MTNCompanyProfileRMO.class)); 		    	
+			httpclient.close();
+			httpResponse.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

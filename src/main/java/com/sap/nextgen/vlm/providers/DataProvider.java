@@ -10,5 +10,5 @@ public interface DataProvider<T> {
 
     DataEndpoint getDataEndpoint();
 
-    ResultContainer<T> loadData(DataRequestBody requestBody) throws IOException;
+    ResultContainer<T> loadData(DataRequestBody requestBody) throws Exception;
 }

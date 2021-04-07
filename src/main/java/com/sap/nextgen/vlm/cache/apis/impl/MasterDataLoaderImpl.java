@@ -57,7 +57,8 @@ public class MasterDataLoaderImpl<K,V> implements ICacheServiceLoader<K, V> {
 				 }
 			 }
 		  }
-		  
+		  httpclient.close();
+		  httpResponse.close();
 		  return (V)masterDataList;
 	
 	}

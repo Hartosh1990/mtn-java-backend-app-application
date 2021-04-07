@@ -45,7 +45,8 @@ public class IndustryDataLoaderImpl<K,V> implements ICacheServiceLoader<K, V> {
 				 }
 			 }
 		  }
-		  
+		  httpclient.close();
+		  httpResponse.close();
 		  return (V)industryDataList;
 	}
 }

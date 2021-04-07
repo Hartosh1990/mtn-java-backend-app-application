@@ -48,7 +48,7 @@ public class CorpOverviewApiV1Test extends APITest {
     public void testGetCompanySearchResults() {
         mockResponseSequence("/response/TransactionsSalesADRMCloud.json");
         JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
-    	String token = jwtTokenFactory.getJWTToken("I303399", "hartosh.singh.bugra@sap.com", "Hartosh Singh", "Bugra", "employee");
+    	String token = jwtTokenFactory.getJWTToken("I314224", "budh.ram@sap.com", "Budh", "Ram", "employee");
         Map<String, List<String>> queryParams = new HashMap<>();
         queryParams.put("searchTerm", Lists.newArrayList("SAP SE"));
         queryParams.put("jwtToken", Lists.newArrayList(token));
@@ -186,7 +186,7 @@ public class CorpOverviewApiV1Test extends APITest {
         JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
     	String token = jwtTokenFactory.getJWTToken("I303399", "hartosh.singh.bugra@sap.com", "Hartosh Singh", "Bugra", "employee");
         Map<String, List<String>> queryParams = new HashMap<>();
-        queryParams.put("mtnId", Lists.newArrayList("2268"));
+        queryParams.put("mtnId", Lists.newArrayList("2285"));
         queryParams.put("jwtToken", Lists.newArrayList(token));
         final DataRequestBody dataRequestBody = new DataRequestBody();
         dataRequestBody.setQueryParams(queryParams);

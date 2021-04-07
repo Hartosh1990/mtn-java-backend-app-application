@@ -19,7 +19,6 @@ import lombok.Data;
 public class JWTTokenFactory {
 	
 	String key = "7f63c626-ff8a-475d-84ee-56c5d4711654";
-	String token;
 	Name name;
 	String id;
 	EmailTemplate[] emails;
@@ -62,7 +61,7 @@ public class JWTTokenFactory {
         Map<String, Object> map = 
         mapper.convertValue(this, new TypeReference<Map<String, Object>>() {});
         
-        token = Jwts.builder().setClaims(map).setExpiration(now).signWith(key1).compact();
+        String token = Jwts.builder().setClaims(map).setExpiration(now).signWith(key1).compact();
 		return token;
 	}
 }

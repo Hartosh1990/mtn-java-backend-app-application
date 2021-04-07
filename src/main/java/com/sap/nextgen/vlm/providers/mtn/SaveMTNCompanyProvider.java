@@ -84,7 +84,10 @@ public class SaveMTNCompanyProvider extends AbstractProvider implements DataProv
 		    	ObjectMapper mapper = new ObjectMapper();
 				JsonNode root = mapper.readTree(response); 
 				JsonNode companylist = root.get("results").get(0);
+				System.out.println(companylist);
 				data.add(mapper.treeToValue(companylist, SaveMTNCompanyRMO.class)); 		    	
+				httpclient.close();
+				httpResponse.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {

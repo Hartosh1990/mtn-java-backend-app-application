@@ -71,11 +71,16 @@ public class GetMTNSearchResultsProvider extends AbstractProvider implements Dat
     	CloseableHttpResponse httpResponse;
 		try {
 			httpResponse = httpclient.execute(get);
+			System.out.println(httpResponse.getStatusLine());
 			String response = EntityUtils.toString(httpResponse.getEntity());
 	    	ObjectMapper mapper = new ObjectMapper();
+	    	
 			JsonNode root = mapper.readTree(response);
 			JsonNode companylist= root.get("results");
+			System.out.println(companylist);
 	    	data.addAll(mapper.readValue(new TreeTraversingParser(companylist),new TypeReference<List<GetMTNSearchResultRMO>>(){}));
+	    	httpclient.close();
+	    	httpResponse.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {

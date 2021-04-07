@@ -81,10 +81,10 @@ public class JerseyApplication extends ResourceConfig {
 
             bind(OkHttpDestinationFactory.class).to(OkHttpDestinationFactory.class).in(Singleton.class);
             bindFactory(ObjectMapperFactory.class).to(ObjectMapper.class).in(Singleton.class);        
-            bind(GetMTNSearchResultsProvider.class).to(DataProvider.class).named(DataEndpoint.GET_COMPANY_SEARCH_RESULTS.name()).in(Singleton.class);
-            bind(SaveMTNCompanyProvider.class).to(DataProvider.class).named(DataEndpoint.SAVE_MTN_COMPANY.name()).in(Singleton.class);
-            bind(GetMTNDashboardDataProvider.class).to(DataProvider.class).named(DataEndpoint.MTN_DASHBOARD_DATA.name()).in(Singleton.class);
-            bind(MTNCompanyProfileProvider.class).to(DataProvider.class).named(DataEndpoint.GET_MTN_COMPANY_PROFILE.name()).in(Singleton.class);
+            bind(GetMTNDashboardDataProvider.class).to(DataProvider.class).named(DataEndpoint.MTN_DASHBOARD_DATA.name());
+            bind(GetMTNSearchResultsProvider.class).to(DataProvider.class).named(DataEndpoint.GET_COMPANY_SEARCH_RESULTS.name());
+            bind(SaveMTNCompanyProvider.class).to(DataProvider.class).named(DataEndpoint.SAVE_MTN_COMPANY.name());
+            bind(MTNCompanyProfileProvider.class).to(DataProvider.class).named(DataEndpoint.GET_MTN_COMPANY_PROFILE.name());
             bind(MasterDataLoaderImpl.class).to(ICacheServiceLoader.class).in(Singleton.class);
             bind(IndustryDataLoaderImpl.class).to(ICacheServiceLoader.class).in(Singleton.class);
             bindAsContract(JWTTokenFactory.class).in(Singleton.class);
