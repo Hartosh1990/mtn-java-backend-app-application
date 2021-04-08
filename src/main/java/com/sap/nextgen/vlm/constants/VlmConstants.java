@@ -10,7 +10,8 @@ public enum VlmConstants {
     fyValue,
     ttmValue,
     childLevel,
-    level_info;
+    level_info,
+    results;
 
     @JsonValue
     @Override

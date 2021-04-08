@@ -88,6 +88,10 @@ public class MTNCompanyProfileRMO {
     @Dimension(label="Country")
     private String country;
     
+    @JsonProperty("businessDesc")
+    @Dimension(label="Business Description")
+    private String businessDesc;
+    
     @JsonProperty(CURRENCY)
     public void unpackCurrencyValue(Map<String,Integer> currencyMap) throws ClientProtocolException, ExecutionException, IOException {
     	try {
