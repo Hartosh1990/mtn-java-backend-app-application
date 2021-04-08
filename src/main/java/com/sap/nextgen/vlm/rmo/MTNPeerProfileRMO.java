@@ -1,6 +1,7 @@
 package com.sap.nextgen.vlm.rmo;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.apache.http.client.ClientProtocolException;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sap.ida.eacp.nucleus.data.client.annotation.Dimension;
 import com.sap.ida.eacp.nucleus.data.client.annotation.Measure;
@@ -23,20 +25,31 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(
-value = {"isTTM", "companyId","region", "industry"//,"updatedDate","operInc","employees", "revenue", "industry",
+value = {"isTTM", "companyId","region", "industry", "currency"//,"updatedDate","operInc","employees", "revenue", "industry",
 		//"fyUpdatedDate", "denomination",  "country"
 		}
 )
 
+@JsonPropertyOrder({
+    "companyName",
+    "revenue",
+    "revenuePerc",
+    "operatingInc",
+    "operatingIncPerc",
+    "employees",
+    "country"
+})
+
 public class MTNPeerProfileRMO {
 	
-	public static final String COMPANYNAME = "companyName";
-	public static final String CURRENCY = "currency";
+	public static final String COMPANYNAME = "companyName";	
 	public static final String OPERATING_INCOME = "operInc";
 	public static final String REVENUE = "revenue";
 	public static final String EMPLOYEES = "employees";
 	public static final String ISTTM = "isTTM";	
 	public static final String COUNTRY = "country";
+	//public static final String OPERATING_INCOME_PERC = "operIncPerc";
+	//public static final String REVENUE_PERC = "revenuePerc";
 	
 	private SimpleDateFormat inputDateFormatter = new SimpleDateFormat("yyyy-mm-dd");
 	private SimpleDateFormat outputDateFormatter = new SimpleDateFormat("mm/dd/yyyy");
@@ -46,18 +59,24 @@ public class MTNPeerProfileRMO {
     @Dimension(label="Company Name")
     private String companyName;
     
-    /*This is placeholder for currency value embedded in currency object coming in input Json*/
-    @JsonProperty("currencyValue")
-    @Dimension(label="Currency")
-    private String currency;
-    
     @JsonProperty("revenueValue")
     @Measure(label="Revenue")
-    private long revenue;
+    private Float revenue;
+    
+
+    @JsonProperty("revenuePercValue")
+    @Measure(label="Revenue Percentage")
+    private Double revenuePerc;
     
     @JsonProperty("opValue")
     @Measure(label="Operating Income")
-    private long operatingInc;
+    private Float operatingInc;
+    
+    @JsonProperty("opPercValue")
+    @Measure(label="Operating Income Percentage")
+    private Double operatingIncPerc;
+    
+   
     
     @JsonProperty("employeesValue")
     @Measure(label="Employees")
@@ -68,15 +87,7 @@ public class MTNPeerProfileRMO {
     @Dimension(label="Country")
     private String country;
     
-    @JsonProperty(CURRENCY)
-    public void unpackCurrencyValue(Map<String,Integer> currencyMap) throws ClientProtocolException, ExecutionException, IOException {
-    	try {
-    	Map<String,MasterDataGenericRMO> currencyList = (Map<String,MasterDataGenericRMO>) CacheManager.getInstance().getCachedObjects(CacheManager.getInstance().getDefaultMasterPackageKey(30, VlmConstants.CurrencyData.name()));
-    	this.currency = currencyList.get(currencyMap.get("value").toString()).getName();
-    	}catch(Exception e) {
-    		e.printStackTrace();
-    	}
-    }
+    
     @JsonProperty(ISTTM)
     public void getIsTTMFlag(short isTTM) {
     	this.isTTM = isTTM;
@@ -85,18 +96,22 @@ public class MTNPeerProfileRMO {
     @JsonProperty(REVENUE)
     public void unpackRevenueValue(Map<String,JsonNode> revenue) {
     	if(isTTM == 0) {
-    		this.revenue = Long.parseLong(revenue.get(VlmConstants.fyValue.name()).get("value").asText());
+    		this.revenue = Float.parseFloat(revenue.get(VlmConstants.fyValue.name()).get("value").asText());
+    		this.revenuePerc = Double.parseDouble(revenue.get(VlmConstants.fyValue.name()).get("percentage").asText());
     	}else {
-    		this.revenue = Long.parseLong(revenue.get(VlmConstants.ttmValue.name()).get("value").asText());
+    		this.revenue = Float.parseFloat(revenue.get(VlmConstants.ttmValue.name()).get("value").asText());
+    		this.revenuePerc = Double.parseDouble(revenue.get(VlmConstants.ttmValue.name()).get("percentage").asText());
     	}
     }
     
     @JsonProperty(OPERATING_INCOME)
     public void unpackOpValue(Map<String,JsonNode> opi) {
     	if(isTTM == 0) {
-    		this.operatingInc = Long.parseLong(opi.get(VlmConstants.fyValue.name()).get("value").asText());
+    		this.operatingInc = Float.parseFloat(opi.get(VlmConstants.fyValue.name()).get("value").asText());
+    		this.operatingIncPerc = Double.parseDouble(opi.get(VlmConstants.fyValue.name()).get("percentage").asText());
     	}else {
-    		this.operatingInc = Long.parseLong(opi.get(VlmConstants.ttmValue.name()).get("value").asText());
+    		this.operatingInc = Float.parseFloat(opi.get(VlmConstants.ttmValue.name()).get("value").asText());
+    		this.operatingIncPerc = Double.parseDouble(opi.get(VlmConstants.ttmValue.name()).get("percentage").asText());
     	}
     }
     
