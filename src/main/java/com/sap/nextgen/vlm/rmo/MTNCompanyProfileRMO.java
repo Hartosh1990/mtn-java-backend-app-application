@@ -62,11 +62,11 @@ public class MTNCompanyProfileRMO {
     
     @JsonProperty("revenueValue")
     @Measure(label="Revenue")
-    private long revenue;
+    private float revenue;
     
     @JsonProperty("opValue")
     @Measure(label="Operating Income")
-    private long operatingInc;
+    private float operatingInc;
     
     @JsonProperty("employeesValue")
     @Measure(label="Employees")
@@ -109,18 +109,18 @@ public class MTNCompanyProfileRMO {
     @JsonProperty(REVENUE)
     public void unpackRevenueValue(Map<String,JsonNode> revenue) {
     	if(isTTM == 0) {
-    		this.revenue = Long.parseLong(revenue.get(VlmConstants.fyValue.name()).get("value").asText());
+    		this.revenue = Float.parseFloat(revenue.get(VlmConstants.fyValue.name()).get("value").asText());
     	}else {
-    		this.revenue = Long.parseLong(revenue.get(VlmConstants.ttmValue.name()).get("value").asText());
+    		this.revenue = Float.parseFloat(revenue.get(VlmConstants.ttmValue.name()).get("value").asText());
     	}
     }
     
     @JsonProperty(OPERATING_INCOME)
     public void unpackOpValue(Map<String,JsonNode> opi) {
     	if(isTTM == 0) {
-    		this.operatingInc = Long.parseLong(opi.get(VlmConstants.fyValue.name()).get("value").asText());
+    		this.operatingInc = Float.parseFloat(opi.get(VlmConstants.fyValue.name()).get("value").asText());
     	}else {
-    		this.operatingInc = Long.parseLong(opi.get(VlmConstants.ttmValue.name()).get("value").asText());
+    		this.operatingInc = Float.parseFloat(opi.get(VlmConstants.ttmValue.name()).get("value").asText());
     	}
     }
     
