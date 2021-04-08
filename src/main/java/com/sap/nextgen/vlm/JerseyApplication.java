@@ -31,6 +31,7 @@ import com.sap.nextgen.vlm.providers.DataProvider;
 import com.sap.nextgen.vlm.providers.mtn.GetMTNSearchResultsProvider;
 import com.sap.nextgen.vlm.providers.mtn.GetMTNDashboardDataProvider;
 import com.sap.nextgen.vlm.providers.mtn.MTNCompanyProfileProvider;
+import com.sap.nextgen.vlm.providers.mtn.MTNPeerProfileProvider;
 import com.sap.nextgen.vlm.providers.mtn.SaveMTNCompanyProvider;
 import com.sap.nextgen.vlm.utils.CacheManager;
 import com.sap.nextgen.vlm.utils.JWTTokenFactory;
@@ -85,6 +86,7 @@ public class JerseyApplication extends ResourceConfig {
             bind(GetMTNSearchResultsProvider.class).to(DataProvider.class).named(DataEndpoint.GET_COMPANY_SEARCH_RESULTS.name());
             bind(SaveMTNCompanyProvider.class).to(DataProvider.class).named(DataEndpoint.SAVE_MTN_COMPANY.name());
             bind(MTNCompanyProfileProvider.class).to(DataProvider.class).named(DataEndpoint.GET_MTN_COMPANY_PROFILE.name());
+            bind(MTNPeerProfileProvider.class).to(DataProvider.class).named(DataEndpoint.GET_MTN_PEER_PROFILE.name()).in(Singleton.class);
             bind(MasterDataLoaderImpl.class).to(ICacheServiceLoader.class).in(Singleton.class);
             bind(IndustryDataLoaderImpl.class).to(ICacheServiceLoader.class).in(Singleton.class);
             bindAsContract(JWTTokenFactory.class).in(Singleton.class);

@@ -204,4 +204,34 @@ public class CorpOverviewApiV1Test extends APITest {
         final ResponseComponentDTO c4sComponentDTO = response.readEntity(ResponseComponentDTO.class);
 
     }
+    
+    @Test
+    public void testGetMTNPeerProfile() {
+        mockResponseSequence("/response/TransactionsSalesADRMCloud.json");
+        JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
+    	String token = jwtTokenFactory.getJWTToken("I314224", "budh.ram@sap.com", "Budh", "Ram", "employee");
+        Map<String, List<String>> queryParams = new HashMap<>();
+        queryParams.put("mtnId", Lists.newArrayList("2295"));
+        queryParams.put("ciq_id", Lists.newArrayList("IQ21835"));
+        queryParams.put("jwtToken", Lists.newArrayList(token));
+        final DataRequestBody dataRequestBody = new DataRequestBody();
+        dataRequestBody.setQueryParams(queryParams);
+
+        final Response response = target("v3/nucleus/data")
+                .path("apps/cicorpoverview")
+                .path("roles/Display")
+                .path("resources")
+                .path(DataEndpoint.GET_MTN_PEER_PROFILE.toString())
+                .request()
+                .post(Entity.json(dataRequestBody));
+        
+        assertThat(response, isOk());
+
+        final ResponseComponentDTO c4sComponentDTO = response.readEntity(ResponseComponentDTO.class);
+
+    }
+    
+ 
+    
+    
    }

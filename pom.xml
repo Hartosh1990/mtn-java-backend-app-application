@@ -139,10 +139,11 @@
         </dependency>
 
         <dependency>
-            <groupId>com.sap.ida.eacp.nucleus</groupId>
-            <artifactId>nucleus-data-client</artifactId>
-            <version>3.0.3</version>
-        </dependency>
+   		 <groupId>com.sap.ida.eacp.nucleus</groupId>
+   		 <artifactId>nucleus-data-client</artifactId>
+   		 <version>4.0.0</version>
+		</dependency>
+
 
         <dependency>
             <groupId>com.sap.ea.nga</groupId>
