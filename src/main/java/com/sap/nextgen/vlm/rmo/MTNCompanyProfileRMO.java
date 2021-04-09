@@ -61,15 +61,15 @@ public class MTNCompanyProfileRMO {
     private String industry;
     
     @JsonProperty("revenueValue")
-    @Measure(label="Revenue")
+    @Measure(label="Revenue", numberOfDecimalPlaces = 1)
     private float revenue;
     
     @JsonProperty("opValue")
-    @Measure(label="Operating Income")
+    @Measure(label="Operating Income",numberOfDecimalPlaces = 1)
     private float operatingInc;
     
     @JsonProperty("employeesValue")
-    @Measure(label="Employees")
+    @Measure(label="Employees",numberOfDecimalPlaces = 0)
     private long employees;
     
     @JsonProperty("periodDateValue")
