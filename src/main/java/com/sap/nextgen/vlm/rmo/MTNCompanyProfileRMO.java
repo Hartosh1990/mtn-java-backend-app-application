@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sap.ida.eacp.nucleus.data.client.annotation.Dimension;
 import com.sap.ida.eacp.nucleus.data.client.annotation.Measure;
+import com.sap.ida.eacp.nucleus.data.client.model.response.data.DisplayType;
 import com.sap.nextgen.vlm.constants.DenominationConstants;
 import com.sap.nextgen.vlm.constants.VlmConstants;
 import com.sap.nextgen.vlm.utils.CacheManager;
@@ -61,11 +62,11 @@ public class MTNCompanyProfileRMO {
     private String industry;
     
     @JsonProperty("revenueValue")
-    @Measure(label="Revenue", numberOfDecimalPlaces = 1)
+    @Measure(label="Revenue", numberOfDecimalPlaces = 1,displayType = DisplayType.CUSTOM,displayTypeScaleFactor = 1000000)
     private float revenue;
     
     @JsonProperty("opValue")
-    @Measure(label="Operating Income",numberOfDecimalPlaces = 1)
+    @Measure(label="Operating Income",numberOfDecimalPlaces = 1, displayType = DisplayType.CUSTOM , displayTypeScaleFactor = 1000000)
     private float operatingInc;
     
     @JsonProperty("employeesValue")

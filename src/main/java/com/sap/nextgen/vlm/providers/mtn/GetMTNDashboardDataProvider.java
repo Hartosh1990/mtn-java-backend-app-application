@@ -2,8 +2,12 @@ package com.sap.nextgen.vlm.providers.mtn;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.apache.http.*;
 
 import org.apache.http.client.ClientProtocolException;
@@ -25,6 +29,11 @@ import java.sql.*;
 import com.sap.nextgen.vlm.utils.*;
 
 public class GetMTNDashboardDataProvider extends AbstractProvider implements DataProvider<MtnDashboardRMO> {
+	 
+	    String clientProcessId;	    
+	    int langId = 10;
+	    String baseUri = "https://vlmdev.cfapps.eu10.hana.ondemand.com";
+	    String jwtToken; 
     @Override
     public DataEndpoint getDataEndpoint() {
         return DataEndpoint.MTN_DASHBOARD_DATA;
@@ -34,12 +43,25 @@ public class GetMTNDashboardDataProvider extends AbstractProvider implements Dat
     public ResultContainer<MtnDashboardRMO> loadData(DataRequestBody requestBody)  throws ClientProtocolException, IOException, SQLException {
         
         String baseUri = "https://vlmdev.cfapps.eu10.hana.ondemand.com";
-    	String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQ4ODAxLCJmaXJzdE5hbWUiOiJNYXJpYW4iLCJsYXN0TmFtZSI6IkluZm8iLCJlbWFpbCI6ImluZm9AZXN0aW1hdGUuc2siLCJsYW5nSWQiOjEwLCJsYW5nTmFtZSI6IkVuZ2xpc2giLCJjb21wYW55TmFtZSI6ImVzdGltIiwidXNlclR5cGUiOiJHZW5lcmFsIFVzZXIiLCJ1c2VyQ2F0ZWdvcnkiOjIsImlzV2hhdHNOZXdBdmFpbGFibGUiOjEsImlhdCI6MTYxNzA4NzUxMiwiZXhwIjoxNjE3OTUxNTEyfQ.twvEECFT45utyp03f7VPho4Ijt6nR2CFEk9hmyqiCvg";
     	CloseableHttpClient httpclient = HttpClients.createDefault();
+    	Map<String, List<String>> queryParams = Optional.ofNullable(requestBody.getQueryParams()).orElse(new HashMap<>());
     	
-    	HttpGet get = new HttpGet(baseUri +     "/services/getMTNList?langId=10&pageOffset=0&clientProcessId=20210304140829nlmahf2b65s6&seqNo=8");
-    	get.setHeader(HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
-    	get.setHeader("x-auth-token", token);
+    	if (queryParams.containsKey("clientProcessId")) {
+    		clientProcessId = requestBody.getQueryParams().get("clientProcessId").get(0);
+    	}else {
+    		clientProcessId = "intwomtn";
+    	}
+    	if (queryParams.containsKey("langId")) {
+    		langId = Integer.parseInt(requestBody.getQueryParams().get("langId").get(0));
+    	}    	
+    	if (queryParams.containsKey("jwtToken")) {
+    		jwtToken = requestBody.getQueryParams().get("jwtToken").get(0);
+    		System.out.println(jwtToken);
+    	}
+    	
+    	HttpGet get = new HttpGet(baseUri +"/services/getMTNList?langId="+langId+"&clientProcessId="+clientProcessId+"&seqNo=8");
+    	get.setHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
+    	get.setHeader("Cookie", "UserData="+jwtToken);
     	
     	CloseableHttpResponse httpResponse = httpclient.execute(get);
     	String response = EntityUtils.toString(httpResponse.getEntity());
