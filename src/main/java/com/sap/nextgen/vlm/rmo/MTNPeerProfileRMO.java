@@ -11,12 +11,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Strings;
 import com.sap.ida.eacp.nucleus.data.client.annotation.Dimension;
 import com.sap.ida.eacp.nucleus.data.client.annotation.Measure;
 import com.sap.ida.eacp.nucleus.data.client.model.response.data.DisplayType;
 import com.sap.nextgen.vlm.constants.VlmConstants;
 import com.sap.nextgen.vlm.utils.CacheManager;
 import com.sap.nextgen.vlm.utils.MasterPackageKey;
+import com.sap.nextgen.vlm.utils.NullHandlingUtility;
 
 import lombok.Data;
 
@@ -78,7 +80,7 @@ public class MTNPeerProfileRMO {
     
     @JsonProperty("employeesValue")
     @Measure(label="Employees", numberOfDecimalPlaces = 0, rank = 5)
-    private long employees;
+    private Long employees;
    
 
     @JsonProperty("countryValue")
@@ -94,31 +96,31 @@ public class MTNPeerProfileRMO {
     @JsonProperty(REVENUE)
     public void unpackRevenueValue(Map<String,JsonNode> revenue) {
     	if(isTTM == 0) {
-    		this.revenue = Float.parseFloat(revenue.get(VlmConstants.fyValue.name()).get("value").asText());
-    		this.revenuePerc = Double.parseDouble(revenue.get(VlmConstants.fyValue.name()).get("percentage").asText());
+    		this.revenue = NullHandlingUtility.parseFloat(revenue.get(VlmConstants.fyValue.name()).get("value"));
+    		this.revenuePerc = NullHandlingUtility.parseDouble(revenue.get(VlmConstants.fyValue.name()).get("percentage"));
     	}else {
-    		this.revenue = Float.parseFloat(revenue.get(VlmConstants.ttmValue.name()).get("value").asText());
-    		this.revenuePerc = Double.parseDouble(revenue.get(VlmConstants.ttmValue.name()).get("percentage").asText());
+    		this.revenue = NullHandlingUtility.parseFloat(revenue.get(VlmConstants.ttmValue.name()).get("value"));
+    		this.revenuePerc = NullHandlingUtility.parseDouble(revenue.get(VlmConstants.ttmValue.name()).get("percentage"));
     	}
     }
     
     @JsonProperty(OPERATING_INCOME)
     public void unpackOpValue(Map<String,JsonNode> opi) {
     	if(isTTM == 0) {
-    		this.operatingInc = Float.parseFloat(opi.get(VlmConstants.fyValue.name()).get("value").asText());
-    		this.operatingIncPerc = Double.parseDouble(opi.get(VlmConstants.fyValue.name()).get("percentage").asText());
+    		this.operatingInc = NullHandlingUtility.parseFloat(opi.get(VlmConstants.fyValue.name()).get("value"));
+    		this.operatingIncPerc =  NullHandlingUtility.parseDouble(opi.get(VlmConstants.fyValue.name()).get("percentage"));    		
     	}else {
-    		this.operatingInc = Float.parseFloat(opi.get(VlmConstants.ttmValue.name()).get("value").asText());
-    		this.operatingIncPerc = Double.parseDouble(opi.get(VlmConstants.ttmValue.name()).get("percentage").asText());
+    		this.operatingInc = NullHandlingUtility.parseFloat(opi.get(VlmConstants.ttmValue.name()).get("value"));
+    		this.operatingIncPerc = NullHandlingUtility.parseDouble(opi.get(VlmConstants.ttmValue.name()).get("percentage"));
     	}
     }
     
     @JsonProperty(EMPLOYEES)
     public void unpackEmployeesValue(Map<String,JsonNode> employees) {
     	if(isTTM == 0) {
-    		this.employees = Long.parseLong(employees.get(VlmConstants.fyValue.name()).get("value").asText());
+    		this.employees = NullHandlingUtility.parseLong(employees.get(VlmConstants.fyValue.name()).get("value"));
     	}else {
-    		this.employees = Long.parseLong(employees.get(VlmConstants.ttmValue.name()).get("value").asText());
+    		this.employees = NullHandlingUtility.parseLong(employees.get(VlmConstants.ttmValue.name()).get("value"));
     	}
     }
    

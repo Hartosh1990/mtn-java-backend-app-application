@@ -18,6 +18,7 @@ import com.sap.nextgen.vlm.constants.DenominationConstants;
 import com.sap.nextgen.vlm.constants.VlmConstants;
 import com.sap.nextgen.vlm.utils.CacheManager;
 import com.sap.nextgen.vlm.utils.MasterPackageKey;
+import com.sap.nextgen.vlm.utils.NullHandlingUtility;
 
 import lombok.Data;
 
@@ -63,15 +64,15 @@ public class MTNCompanyProfileRMO {
     
     @JsonProperty("revenueValue")
     @Measure(label="Revenue", numberOfDecimalPlaces = 1,displayType = DisplayType.CUSTOM,displayTypeScaleFactor = 1000000)
-    private float revenue;
+    private Float revenue;
     
     @JsonProperty("opValue")
     @Measure(label="Operating Income",numberOfDecimalPlaces = 1, displayType = DisplayType.CUSTOM , displayTypeScaleFactor = 1000000)
-    private float operatingInc;
+    private Float operatingInc;
     
     @JsonProperty("employeesValue")
     @Measure(label="Employees",numberOfDecimalPlaces = 0)
-    private long employees;
+    private Long employees;
     
     @JsonProperty("periodDateValue")
     @Dimension(label="Period Date")
@@ -110,27 +111,27 @@ public class MTNCompanyProfileRMO {
     @JsonProperty(REVENUE)
     public void unpackRevenueValue(Map<String,JsonNode> revenue) {
     	if(isTTM == 0) {
-    		this.revenue = Float.parseFloat(revenue.get(VlmConstants.fyValue.name()).get("value").asText());
+    		this.revenue = NullHandlingUtility.parseFloat(revenue.get(VlmConstants.fyValue.name()).get("value"));
     	}else {
-    		this.revenue = Float.parseFloat(revenue.get(VlmConstants.ttmValue.name()).get("value").asText());
+    		this.revenue = NullHandlingUtility.parseFloat(revenue.get(VlmConstants.ttmValue.name()).get("value"));
     	}
     }
     
     @JsonProperty(OPERATING_INCOME)
     public void unpackOpValue(Map<String,JsonNode> opi) {
     	if(isTTM == 0) {
-    		this.operatingInc = Float.parseFloat(opi.get(VlmConstants.fyValue.name()).get("value").asText());
+    		this.operatingInc = NullHandlingUtility.parseFloat(opi.get(VlmConstants.fyValue.name()).get("value"));
     	}else {
-    		this.operatingInc = Float.parseFloat(opi.get(VlmConstants.ttmValue.name()).get("value").asText());
+    		this.operatingInc = NullHandlingUtility.parseFloat(opi.get(VlmConstants.ttmValue.name()).get("value"));
     	}
     }
     
     @JsonProperty(EMPLOYEES)
     public void unpackEmployeesValue(Map<String,JsonNode> employees) {
     	if(isTTM == 0) {
-    		this.employees = Long.parseLong(employees.get(VlmConstants.fyValue.name()).get("value").asText());
+    		this.employees = NullHandlingUtility.parseLong(employees.get(VlmConstants.fyValue.name()).get("value"));
     	}else {
-    		this.employees = Long.parseLong(employees.get(VlmConstants.ttmValue.name()).get("value").asText());
+    		this.employees = NullHandlingUtility.parseLong(employees.get(VlmConstants.ttmValue.name()).get("value"));
     	}
     }
     @JsonProperty(INDUSTRY)

@@ -347,8 +347,8 @@ public class CorpOverviewApiV1Test extends APITest {
         JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
     	String token = jwtTokenFactory.getJWTToken("I314224", "budh.ram@sap.com", "Budh", "Ram", "employee");
         Map<String, List<String>> queryParams = new HashMap<>();
-        queryParams.put("mtnId", Lists.newArrayList("2414"));
-        queryParams.put("ciqId", Lists.newArrayList("IQ126475"));
+        queryParams.put("mtnId", Lists.newArrayList("2465"));
+        queryParams.put("ciqId", Lists.newArrayList("IQ704634"));
         queryParams.put("jwtToken", Lists.newArrayList(token));
         final DataRequestBody dataRequestBody = new DataRequestBody();
         dataRequestBody.setQueryParams(queryParams);
