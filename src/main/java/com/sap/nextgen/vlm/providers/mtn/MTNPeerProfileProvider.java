@@ -36,6 +36,8 @@ public class MTNPeerProfileProvider extends AbstractProvider implements DataProv
     String isMtnCompany;
     String baseUri = "https://vlmdev.cfapps.eu10.hana.ondemand.com";
     String jwtToken; 
+    String clientProcessId;    
+    int langId = 10;
     
     @Override
     public DataEndpoint getDataEndpoint() {
@@ -49,11 +51,19 @@ public class MTNPeerProfileProvider extends AbstractProvider implements DataProv
     	if (queryParams.containsKey("mtnId")) {
     		mtnId = requestBody.getQueryParams().get("mtnId").get(0);
     	}
-    	if (queryParams.containsKey("ciq_id")) {
-    		ciqId = requestBody.getQueryParams().get("ciq_id").get(0);
+    	if (queryParams.containsKey("clientProcessId")) {
+    		clientProcessId = requestBody.getQueryParams().get("clientProcessId").get(0)+"_intwomtn";
+    	}else {
+    		clientProcessId = mtnId+"_intwomtn";
+    	}
+    	if (queryParams.containsKey("ciqId")) {
+    		ciqId = requestBody.getQueryParams().get("ciqId").get(0);
     	}
     	if (queryParams.containsKey("jwtToken")) {
     		jwtToken = requestBody.getQueryParams().get("jwtToken").get(0);
+    	}
+    	if (queryParams.containsKey("langId")) {
+    		langId = Integer.parseInt(requestBody.getQueryParams().get("langId").get(0));
     	}
     	
     	//fetch the MTN flags
@@ -68,10 +78,10 @@ public class MTNPeerProfileProvider extends AbstractProvider implements DataProv
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
         
-        HttpPost post = new HttpPost(baseUri +"/services/getMtnProfileData?langId=10&clientProcessId=testbudh1&seqNo=8&mtnId="+mtnId + "&isPeerDataAvailable="+ mtnFlags.isPeerDataAvailable + "&ciq_id="+ ciqId);
+        HttpPost post = new HttpPost(baseUri +"/services/getMtnProfileData?langId=" + langId + "&clientProcessId=" + clientProcessId +"&seqNo=8");
 		post.setHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
 		post.setHeader("Cookie", "UserData="+jwtToken);		
-        String json = "{\"ciq_id\" :\"" + ciqId + "\", \"isPeerDataAvailable\": \"" + mtnFlags.isPeerDataAvailable + "\",  \"mtnid\":" + mtnId + "}";
+        String json = "{\"ciq_id\" :\"" + ciqId + "\", \"isPeerDataAvailable\": " + mtnFlags.isPeerDataAvailable + ",  \"mtnid\":" + mtnId + "}";
       
 			
 			try {

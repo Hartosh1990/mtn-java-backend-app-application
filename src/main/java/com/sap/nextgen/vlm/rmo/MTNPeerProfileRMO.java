@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sap.ida.eacp.nucleus.data.client.annotation.Dimension;
 import com.sap.ida.eacp.nucleus.data.client.annotation.Measure;
+import com.sap.ida.eacp.nucleus.data.client.model.response.data.DisplayType;
 import com.sap.nextgen.vlm.constants.VlmConstants;
 import com.sap.nextgen.vlm.utils.CacheManager;
 import com.sap.nextgen.vlm.utils.MasterPackageKey;
@@ -53,35 +54,35 @@ public class MTNPeerProfileRMO {
 	private short isTTM = 0;
 	
     @JsonProperty(COMPANYNAME)
-    @Dimension(label="Company Name")
+    @Dimension(label="Company Name", rank = 0)
     private String companyName;
     
     @JsonProperty("revenueValue")
-    @Measure(label="Revenue")
+    @Measure(label="Revenue", numberOfDecimalPlaces = 1, rank = 1, displayType = DisplayType.CUSTOM, displayTypeScaleFactor = 1000000)
     private Float revenue;
     
 
     @JsonProperty("revenuePercValue")
-    @Measure(label="Revenue Percentage")
+    @Measure(label="Revenue Percentage", numberOfDecimalPlaces = 1, rank = 2)
     private Double revenuePerc;
     
     @JsonProperty("opValue")
-    @Measure(label="Operating Income")
+    @Measure(label="Operating Income", numberOfDecimalPlaces = 1, rank = 3, displayType = DisplayType.CUSTOM, displayTypeScaleFactor = 1000000)
     private Float operatingInc;
     
     @JsonProperty("opPercValue")
-    @Measure(label="Operating Income Percentage")
+    @Measure(label="Operating Income Percentage", numberOfDecimalPlaces = 1, rank = 4)
     private Double operatingIncPerc;
     
    
     
     @JsonProperty("employeesValue")
-    @Measure(label="Employees")
+    @Measure(label="Employees", numberOfDecimalPlaces = 0, rank = 5)
     private long employees;
    
 
     @JsonProperty("countryValue")
-    @Dimension(label="Country")
+    @Dimension(label="Country", rank = 6)
     private String country;
     
     
