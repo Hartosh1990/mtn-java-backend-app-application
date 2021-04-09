@@ -56,7 +56,8 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
             				  "get_company_search_results," + 
             				  "save_mtn_company," +
                               "mtn_dashboard_data,"+
-            				  "get_mtn_company_profile"
+            				  "get_mtn_company_profile," +
+                              "save_mtn_company_profile_info"
     ) String appId,String role,String resourceId, Boolean useMock,Long variantId, DataRequestBody requestBody) throws Exception {
 
         try {

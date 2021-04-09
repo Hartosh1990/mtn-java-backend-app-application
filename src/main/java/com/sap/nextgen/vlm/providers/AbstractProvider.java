@@ -10,6 +10,7 @@ public abstract class AbstractProvider {
 
 
 
+	protected String baseUri = "https://vlmdev.cfapps.eu10.hana.ondemand.com";
 
     protected void resolveRequestBody(DataRequestBody requestBody) {
         RequestBodyChecker.check(requestBody);
