@@ -106,7 +106,6 @@ public class CorpOverviewApiV1Test extends APITest {
         Map<String, List<String>> queryParams = new HashMap<>();
         queryParams.put("mtnId", Lists.newArrayList("2443"));
         queryParams.put("saveType", Lists.newArrayList("3"));
-        queryParams.put("id", Lists.newArrayList("2443"));
         queryParams.put("newValue", Lists.newArrayList("0"));
         queryParams.put("jwtToken", Lists.newArrayList(token));
         final DataRequestBody dataRequestBody = new DataRequestBody();
@@ -133,7 +132,6 @@ public class CorpOverviewApiV1Test extends APITest {
         Map<String, List<String>> queryParams = new HashMap<>();
         queryParams.put("mtnId", Lists.newArrayList("2443"));
         queryParams.put("saveType", Lists.newArrayList("3"));
-        queryParams.put("id", Lists.newArrayList("2443"));
         queryParams.put("newValue", Lists.newArrayList("1"));
         queryParams.put("jwtToken", Lists.newArrayList(token));
         final DataRequestBody dataRequestBody = new DataRequestBody();
@@ -160,7 +158,6 @@ public class CorpOverviewApiV1Test extends APITest {
         Map<String, List<String>> queryParams = new HashMap<>();
         queryParams.put("mtnId", Lists.newArrayList("2443"));
         queryParams.put("saveType", Lists.newArrayList("4"));
-        queryParams.put("id", Lists.newArrayList("2443"));
         queryParams.put("newValue", Lists.newArrayList("1"));
         queryParams.put("jwtToken", Lists.newArrayList(token));
         final DataRequestBody dataRequestBody = new DataRequestBody();
@@ -187,7 +184,6 @@ public class CorpOverviewApiV1Test extends APITest {
         Map<String, List<String>> queryParams = new HashMap<>();
         queryParams.put("mtnId", Lists.newArrayList("2443"));
         queryParams.put("saveType", Lists.newArrayList("4"));
-        queryParams.put("id", Lists.newArrayList("2443"));
         queryParams.put("newValue", Lists.newArrayList("2"));
         queryParams.put("jwtToken", Lists.newArrayList(token));
         final DataRequestBody dataRequestBody = new DataRequestBody();
@@ -213,7 +209,6 @@ public class CorpOverviewApiV1Test extends APITest {
         Map<String, List<String>> queryParams = new HashMap<>();
         queryParams.put("mtnId", Lists.newArrayList("2443"));
         queryParams.put("saveType", Lists.newArrayList("4"));
-        queryParams.put("id", Lists.newArrayList("2443"));
         queryParams.put("newValue", Lists.newArrayList("3"));
         queryParams.put("jwtToken", Lists.newArrayList(token));
         final DataRequestBody dataRequestBody = new DataRequestBody();

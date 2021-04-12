@@ -46,9 +46,6 @@ public class SaveMTNCompanyProfileInfoProvider extends AbstractProvider implemen
     	if (queryParams.containsKey("saveType")) {
     		saveType = requestBody. getQueryParams().get("saveType").get(0);
     	}
-    	if (queryParams.containsKey("id")) {
-    		id = requestBody. getQueryParams().get("id").get(0);
-    	}
     	if (queryParams.containsKey("newValue")) {
     		newValue = requestBody. getQueryParams().get("newValue").get(0);
     	}    	
@@ -62,7 +59,7 @@ public class SaveMTNCompanyProfileInfoProvider extends AbstractProvider implemen
 
         
     	HttpPost post = new HttpPost(baseUri +"/services/saveMtnValue?langId=10&clientProcessId=20210304140829nlmahf2b65s6&seqNo=8&mtnId=" + mtnId + "&saveType=" + saveType);
-        String json = "{\"id\" :\"" + id + "\", \"newValue\": \"" + newValue + "\"}";
+        String json = "{\"id\" :\"" + mtnId + "\", \"newValue\": \"" + newValue + "\"}";
         try {
 			StringEntity entity = new StringEntity(json);
 			post.setEntity(entity);			
