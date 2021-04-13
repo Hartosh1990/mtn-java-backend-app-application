@@ -362,6 +362,32 @@ public class CorpOverviewApiV1Test extends APITest {
 
     }
     
+    @Test
+    public void testMTNTrendAnalysisYears() {
+        mockResponseSequence("/response/TransactionsSalesADRMCloud.json");
+        JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
+    	String token = jwtTokenFactory.getJWTToken("I314224", "budh.ram@sap.com", "Budh", "Ram", "employee");
+        Map<String, List<String>> queryParams = new HashMap<>();
+        queryParams.put("mtnId", Lists.newArrayList("2464"));
+        queryParams.put("ciqId", Lists.newArrayList("IQ704634"));
+        queryParams.put("jwtToken", Lists.newArrayList(token));
+        final DataRequestBody dataRequestBody = new DataRequestBody();
+        dataRequestBody.setQueryParams(queryParams);
+
+        final Response response = target("v3/nucleus/data")
+                .path("apps/cicorpoverview")
+                .path("roles/Display")
+                .path("resources")
+                .path(DataEndpoint.GET_MTN_TREND_ANALYSIS_YEARS.toString())
+                .request()
+                .post(Entity.json(dataRequestBody));
+        
+        assertThat(response, isOk());
+
+        final ResponseComponentDTO c4sComponentDTO = response.readEntity(ResponseComponentDTO.class);
+
+    }
+    
  
     
     
