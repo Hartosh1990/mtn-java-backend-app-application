@@ -35,6 +35,7 @@ import com.sap.nextgen.vlm.providers.mtn.MTNPeerProfileProvider;
 import com.sap.nextgen.vlm.providers.mtn.MTNTrendAnalysisYearsProvider;
 import com.sap.nextgen.vlm.providers.mtn.SaveMTNCompanyProfileInfoProvider;
 import com.sap.nextgen.vlm.providers.mtn.SaveMTNCompanyProvider;
+import com.sap.nextgen.vlm.providers.mtn.GetMTNKPICatalogProvider;
 import com.sap.nextgen.vlm.utils.CacheManager;
 import com.sap.nextgen.vlm.utils.JWTTokenFactory;
 
@@ -91,6 +92,7 @@ public class JerseyApplication extends ResourceConfig {
             bind(MTNPeerProfileProvider.class).to(DataProvider.class).named(DataEndpoint.GET_MTN_PEER_PROFILE.name()).in(Singleton.class);
             bind(SaveMTNCompanyProfileInfoProvider.class).to(DataProvider.class).named(DataEndpoint.SAVE_MTN_COMPANY_PROFILE_INFO.name()).in(Singleton.class);
             bind(MTNTrendAnalysisYearsProvider.class).to(DataProvider.class).named(DataEndpoint.GET_MTN_TREND_ANALYSIS_YEARS.name()).in(Singleton.class);
+            bind(GetMTNKPICatalogProvider.class).to(DataProvider.class).named(DataEndpoint.GET_MTN_KPI_CATALOG.name()).in(Singleton.class);
             bind(MasterDataLoaderImpl.class).to(ICacheServiceLoader.class).in(Singleton.class);
             bind(IndustryDataLoaderImpl.class).to(ICacheServiceLoader.class).in(Singleton.class);
             bindAsContract(JWTTokenFactory.class).in(Singleton.class);
