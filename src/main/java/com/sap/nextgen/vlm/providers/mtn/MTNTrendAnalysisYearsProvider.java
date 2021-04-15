@@ -49,7 +49,11 @@ public class MTNTrendAnalysisYearsProvider extends AbstractProvider implements D
     @SuppressWarnings("finally")
 	@Override
     public ResultContainer<MTNTrendAnalysisYearsRMO> loadData(DataRequestBody requestBody) throws SQLException {
-    	
+    	CallableStatement cSt = null;
+        ResultSet rs = null;
+        Connection conn = null;
+        final List<MTNTrendAnalysisYearsRMO> data = new ArrayList<MTNTrendAnalysisYearsRMO>();
+    	try {
     	Map<String, List<String>> queryParams = Optional.ofNullable(requestBody.getQueryParams()).orElse(new HashMap<>());
     	if (queryParams.containsKey("mtnId")) {
     		mtnId = Integer.parseInt(requestBody.getQueryParams().get("mtnId").get(0));
@@ -66,13 +70,12 @@ public class MTNTrendAnalysisYearsProvider extends AbstractProvider implements D
     		langId = Integer.parseInt(requestBody.getQueryParams().get("langId").get(0));
     	}
     	
-    	final List<MTNTrendAnalysisYearsRMO> data = new ArrayList<MTNTrendAnalysisYearsRMO>();
+    	
     	//fetch the years data from HANA
-    	Connection conn =  DbConnection.getConnection();
-		CallableStatement cSt = null;
-        ResultSet rs = null;
+    	 conn =  DbConnection.getConnection();
+		
          if (conn != null) {        	
-            try {
+            
             	String sql = "call USP_GET_MTN_TREND_ANALYSIS_YEARS(?,?,?,?,?,?)";
                 cSt = conn.prepareCall(sql);
                 if (cSt == null) {
@@ -98,18 +101,19 @@ public class MTNTrendAnalysisYearsProvider extends AbstractProvider implements D
                 } 
                 cSt.close();                
                 
-            } catch (Exception se) {
-                se.printStackTrace();
-            } 
-            finally { 
+            
+        	 
+        }
+         } catch (Exception se) {
+             se.printStackTrace();
+         } 
+         finally { 
 					conn.close();
 					rs.close();
 					cSt.close();
-					
-            }
-        	 
-        }
-         return new ResultContainer<>(data, MTNTrendAnalysisYearsRMO.class);
+					return new ResultContainer<>(data, MTNTrendAnalysisYearsRMO.class);					
+         }
+         
     }
     
 }
