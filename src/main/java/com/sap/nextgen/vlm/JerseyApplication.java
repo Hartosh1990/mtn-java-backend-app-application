@@ -31,6 +31,7 @@ import com.sap.nextgen.vlm.providers.DataProvider;
 import com.sap.nextgen.vlm.providers.mtn.GetMTNSearchResultsProvider;
 import com.sap.nextgen.vlm.providers.mtn.GetMTNDashboardDataProvider;
 import com.sap.nextgen.vlm.providers.mtn.MTNCompanyProfileProvider;
+import com.sap.nextgen.vlm.providers.mtn.MTNKpiMetricsDataProvider;
 import com.sap.nextgen.vlm.providers.mtn.MTNPeerProfileProvider;
 import com.sap.nextgen.vlm.providers.mtn.MTNTrendAnalysisYearsProvider;
 import com.sap.nextgen.vlm.providers.mtn.SaveMTNCompanyProfileInfoProvider;
@@ -97,7 +98,7 @@ public class JerseyApplication extends ResourceConfig {
             bind(IndustryDataLoaderImpl.class).to(ICacheServiceLoader.class).in(Singleton.class);
             bindAsContract(JWTTokenFactory.class).in(Singleton.class);
             bindAsContract(CacheManager.class).in(Singleton.class); // cache manager should be registered to the application at start of app.
-            
+            bind(MTNKpiMetricsDataProvider.class).to(DataProvider.class).named(DataEndpoint.GET_MTN_KPI_METRICS.name()).in(Singleton.class);
         }
     }
 }

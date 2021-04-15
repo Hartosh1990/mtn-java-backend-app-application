@@ -11,7 +11,10 @@ public enum VlmConstants {
     ttmValue,
     childLevel,
     level_info,
-    results;
+    results,
+    kpiValue,
+    baselineInfo,
+    isBaseCompany;
 
     @JsonValue
     @Override

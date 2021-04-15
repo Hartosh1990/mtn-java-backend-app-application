@@ -1,5 +1,10 @@
 package com.sap.nextgen.vlm.utils;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -59,5 +64,20 @@ public class MathUtils {
             return null;
         }
         return val1 * val2;
+    }
+    
+    public static Map.Entry<String, Double> gethighestNumber(Map<String,Double> values) {
+    	if(!values.isEmpty()) {
+    		return Collections.max(values.entrySet(),(item1,item2) -> item1.getValue() > item2.getValue()?1:-1);	
+    	}
+    	return null;
+    	
+    }
+    
+    public static Map.Entry<String, Double> getLowestNumber(Map<String,Double> values) {
+    	if(!values.isEmpty()) {
+    		return Collections.min(values.entrySet(),(item1,item2) -> item1.getValue() > item2.getValue()?1:-1);	
+    	}
+    	return null;
     }
 }

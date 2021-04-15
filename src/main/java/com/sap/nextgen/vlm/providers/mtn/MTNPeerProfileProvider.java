@@ -100,7 +100,7 @@ public class MTNPeerProfileProvider extends AbstractProvider implements DataProv
 		   // System.out.println(response);
 		    
 			JsonNode root = mapper.readTree(response); 
-			JsonNode peerList = root.get("results").get(0).get("peerData");;
+			JsonNode peerList = root.get("results").get(0).get("peerData");
 			//JsonNode peerData = companyProfileObject.get("peerData");
 			//System.out.println(peerList);
 			data.addAll(mapper.readValue(new TreeTraversingParser(peerList),new TypeReference<List<MTNPeerProfileRMO>>(){})); 	

@@ -25,6 +25,7 @@ public class MTNCompanyProfileProvider extends AbstractProvider implements DataP
     String ciqId;
     String companyName;
     String isMtnCompany;
+    String clientProcessId;
     String baseUri = "https://vlmdev.cfapps.eu10.hana.ondemand.com";
     String jwtToken; 
     
@@ -46,19 +47,24 @@ public class MTNCompanyProfileProvider extends AbstractProvider implements DataP
     	if (queryParams.containsKey("jwtToken")) {
     		jwtToken = requestBody.getQueryParams().get("jwtToken").get(0);
     	}
+    	if (queryParams.containsKey("clientProcessId")) {
+    		clientProcessId = requestBody.getQueryParams().get("clientProcessId").get(0);
+    	}else {
+    		clientProcessId = mtnId+"_intwomtn";
+    	}
 
         final List<MTNCompanyProfileRMO> data = new ArrayList<MTNCompanyProfileRMO>();
         
 
 	    ObjectMapper mapper = new ObjectMapper();
 		try {
-			String uri = baseUri +"/services/getMtnCompany?langId=10&clientProcessId=20210304140829nlmahf2b65s6&seqNo=8&mtnId="+mtnId;
+			String uri = baseUri +"/services/getMtnCompany?langId=10&clientProcessId="+clientProcessId+"&seqNo=8&mtnId="+mtnId;
 			JsonNode root = HttpRequestManager.getRootObjectFromGetNodeService(jwtToken,uri);
 			JsonNode companyProfileObject = root.get("results");
 			System.out.println(companyProfileObject);
 			MTNCompanyProfileRMO companyProfileInfo = mapper.treeToValue(companyProfileObject, MTNCompanyProfileRMO.class);
 			String peerDataFlag = getIsPeerDataAvailableFlag(mtnId);
-			String getPeersUri = baseUri +"/services/getMtnProfileData?langId=10&clientProcessId=20210304140829nlmahf2b65s6&seqNo=8";
+			String getPeersUri = baseUri +"/services/getMtnProfileData?langId=10&clientProcessId="+clientProcessId+"&seqNo=8";
 			String body = "{\"ciq_id\":\""+ciqId+"\",\"mtnid\":"+mtnId+",\"isPeerDataAvailable\":"+peerDataFlag+"}";
 			JsonNode businessDescNode = HttpRequestManager.getRootObjectFromPostNodeService(jwtToken, getPeersUri, body);
 			String businessDescription = businessDescNode.get(VlmConstants.results.name()).get(0).get("businessDesc").asText();
