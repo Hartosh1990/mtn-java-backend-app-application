@@ -34,6 +34,7 @@ public class GetMTNDashboardDataProvider extends AbstractProvider implements Dat
 	    int langId = 10;
 	    String baseUri = "https://vlmdev.cfapps.eu10.hana.ondemand.com";
 	    String jwtToken; 
+	    Connection conn;
     @Override
     public DataEndpoint getDataEndpoint() {
         return DataEndpoint.MTN_DASHBOARD_DATA;
@@ -78,9 +79,12 @@ public class GetMTNDashboardDataProvider extends AbstractProvider implements Dat
         	data.add(mapper.readValue(mtnjsonstring, MtnDashboardRMO.class));
          } 
         
-        ResultSet rs = DBQueryManager.getResultSet("Select \"T0014_FirstName\", \"T0014_LastName\" from \"T0014_User\" where \"T0014_ID\" =52");
+        ResultSet rs = DBQueryManager.getResultSet("Select \"T0014_FirstName\", \"T0014_LastName\" from \"T0014_User\" where \"T0014_ID\" =52",conn);
         rs.next();
         System.out.println(rs.getString(1)); 
+        if(conn != null) {
+        	conn.close();	
+        }
         return new ResultContainer<>(data, MtnDashboardRMO.class);
         
         

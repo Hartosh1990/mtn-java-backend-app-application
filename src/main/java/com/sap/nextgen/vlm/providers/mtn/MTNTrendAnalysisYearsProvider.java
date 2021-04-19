@@ -1,7 +1,5 @@
 package com.sap.nextgen.vlm.providers.mtn;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -12,28 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.TreeTraversingParser;
 import com.sap.ida.eacp.nucleus.data.client.model.request.DataRequestBody;
 import com.sap.ida.eacp.nucleus.data.client.model.request.ResultContainer;
 import com.sap.nextgen.vlm.constants.DataEndpoint;
 import com.sap.nextgen.vlm.providers.AbstractProvider;
 import com.sap.nextgen.vlm.providers.DataProvider;
-import com.sap.nextgen.vlm.rmo.GetMTNSearchResultRMO;
-import com.sap.nextgen.vlm.rmo.MTNPeerProfileRMO;
 import com.sap.nextgen.vlm.rmo.MTNTrendAnalysisYearsRMO;
-import com.sap.nextgen.vlm.utils.MTNFlags;
-import com.sap.nextgen.vlm.utils.DBQueryManager;
 import com.sap.nextgen.vlm.utils.DbConnection;
 
 public class MTNTrendAnalysisYearsProvider extends AbstractProvider implements DataProvider<MTNTrendAnalysisYearsRMO> {
@@ -109,8 +91,13 @@ public class MTNTrendAnalysisYearsProvider extends AbstractProvider implements D
          } 
          finally { 
 					conn.close();
-					rs.close();
-					cSt.close();
+					if(rs != null) {
+						rs.close();	
+					}
+					if(cSt != null) {
+						cSt.close();						
+					}
+
 					return new ResultContainer<>(data, MTNTrendAnalysisYearsRMO.class);					
          }
          

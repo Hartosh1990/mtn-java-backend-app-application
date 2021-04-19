@@ -1,5 +1,6 @@
 package com.sap.nextgen.vlm.providers.mtn;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sap.ida.eacp.nucleus.data.client.model.request.DataRequestBody;
 import com.sap.ida.eacp.nucleus.data.client.model.request.ResultContainer;
 import com.sap.nextgen.vlm.constants.DataEndpoint;
-import com.sap.nextgen.vlm.constants.VlmConstants;
 import com.sap.nextgen.vlm.providers.AbstractProvider;
 import com.sap.nextgen.vlm.providers.DataProvider;
 import com.sap.nextgen.vlm.rmo.MTNCompanyProfileRMO;
@@ -27,7 +27,9 @@ public class MTNCompanyProfileProvider extends AbstractProvider implements DataP
     String isMtnCompany;
     String clientProcessId;
     String baseUri = "https://vlmdev.cfapps.eu10.hana.ondemand.com";
-    String jwtToken; 
+    String jwtToken;
+    String langId = "10";
+    Connection connection;
     
     @Override
     public DataEndpoint getDataEndpoint() {
@@ -52,6 +54,9 @@ public class MTNCompanyProfileProvider extends AbstractProvider implements DataP
     	}else {
     		clientProcessId = mtnId+"_intwomtn";
     	}
+    	if (queryParams.containsKey("langId")) {
+    		langId = requestBody.getQueryParams().get("langId").get(0);
+    	}
 
         final List<MTNCompanyProfileRMO> data = new ArrayList<MTNCompanyProfileRMO>();
         
@@ -63,11 +68,7 @@ public class MTNCompanyProfileProvider extends AbstractProvider implements DataP
 			JsonNode companyProfileObject = root.get("results");
 			System.out.println(companyProfileObject);
 			MTNCompanyProfileRMO companyProfileInfo = mapper.treeToValue(companyProfileObject, MTNCompanyProfileRMO.class);
-			String peerDataFlag = getIsPeerDataAvailableFlag(mtnId);
-			String getPeersUri = baseUri +"/services/getMtnProfileData?langId=10&clientProcessId="+clientProcessId+"&seqNo=8";
-			String body = "{\"ciq_id\":\""+ciqId+"\",\"mtnid\":"+mtnId+",\"isPeerDataAvailable\":"+peerDataFlag+"}";
-			JsonNode businessDescNode = HttpRequestManager.getRootObjectFromPostNodeService(jwtToken, getPeersUri, body);
-			String businessDescription = businessDescNode.get(VlmConstants.results.name()).get(0).get("businessDesc").asText();
+			String businessDescription = getAvailableBusinessDesc(mtnId, langId);
 			companyProfileInfo.setBusinessDesc(businessDescription);
 			data.add(companyProfileInfo); 		    
 		} catch (Exception e) {
@@ -79,18 +80,21 @@ public class MTNCompanyProfileProvider extends AbstractProvider implements DataP
     }
 	
     
-    public String getIsPeerDataAvailableFlag(String mtnId) throws SQLException {
-    	String peerDataFlag = "0";
+    public String getAvailableBusinessDesc(String mtnId, String langId) throws SQLException {
+    	String companyText = "";
     	if(mtnId != null) {
-    		String query =  "select \"T0402_IsPeerDataAvailable\" from \"T0402_MTN_Attributes\" a "
-    				+ "	join \"T0401_MTN\" d on d.\"T0401_AutoID\" = a.\"T0401_AutoID\""
-    				+ "	where d.\"T0401_MTNID\" = "+mtnId+" and d.\"T0401_VersionNo\" = 1";
-    		ResultSet companyTextResult =  DBQueryManager.getResultSet(query);
+    		String query =  "select \"T0431_CompanyText\"  from \"T0402_MTN_Attributes\" a  "
+    				+ " join \"T0401_MTN\" d on d.\"T0401_AutoID\" = a.\"T0401_AutoID\" "
+    				+ " left outer join \"L0431_CIQCompany_Info\" b on a.\"T0431_AutoID\" = b.\"T0431_AutoID\" and b.\"T0018_ID\" = "+langId
+    				+ " where d.\"T0401_MTNID\" = "+mtnId+" and d.\"T0401_VersionNo\" = 1";
+    		ResultSet companyTextResult =  DBQueryManager.getResultSet(query,connection);
     		companyTextResult.next();
-    		peerDataFlag = companyTextResult.getString(1);
+    		companyText = companyTextResult.getString(1);
+    		if(connection != null) {
+        		connection.close();    			
+    		}
     	}
-    	
-    	return peerDataFlag;
+    	return companyText;
     }
     
 }

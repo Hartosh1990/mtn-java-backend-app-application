@@ -7,16 +7,15 @@ import java.sql.Statement;
 
 public class DBQueryManager {
 
-	public static ResultSet getResultSet(String sqlQuery) throws SQLException {
+	public static ResultSet getResultSet(String sqlQuery,Connection connection) throws SQLException {
 		//String sqlQuery = "Select \"T0014_FirstName\", \"T0014_LastName\" from \"T0014_User\" where \"T0014_ID\" =52"; 
-        Connection connection =  DbConnection.getConnection();
+        connection =  DbConnection.getConnection();
         ResultSet resultSet = null;
         if (connection != null) {
            try {
                System.out.println("Connected");
                Statement stmt = connection.createStatement();
                resultSet = stmt.executeQuery(sqlQuery);               
-               connection.close();
           } catch (SQLException e) {        	  
              throw new SQLException("Cause:" + e.getCause() + "SQL Error Code :" + e.getErrorCode());
           }
