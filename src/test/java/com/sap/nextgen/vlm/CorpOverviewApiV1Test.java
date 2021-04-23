@@ -363,6 +363,23 @@ public class CorpOverviewApiV1Test extends APITest {
     }
 
     @Test
+    public void testNewAPI() {
+    	JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
+    	String token = jwtTokenFactory.getJWTToken("I314224", "budh.ram@sap.com", "Budh", "Ram", "employee");
+        
+        final Response response = target("/v3/nucleus/data/apps/mtn/roles/role3/resources/getMtnAnalysis").queryParam("mtnId", "1864")
+        		.queryParam("jwtToken", token)
+        		.queryParam("clientProcessId", "wefwef")
+        		.queryParam("langId", "10")
+        		.request()
+                .get();
+   
+        assertThat(response, isOk());
+
+    }
+    
+    
+    @Test
     public void testGetMTNKPICatalog() {
         mockResponseSequence("/response/TransactionsSalesADRMCloud.json");
         JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();

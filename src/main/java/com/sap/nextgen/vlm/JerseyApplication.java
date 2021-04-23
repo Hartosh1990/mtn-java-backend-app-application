@@ -23,6 +23,7 @@ import com.sap.ea.nga.jersey.openapi.OpenApiResourceFactory;
 import com.sap.ea.nga.jersey.openapi.RolesAllowedOpenAPIExtension;
 import com.sap.ea.nga.jersey.provider.jackson.ObjectMapperFactory;
 import com.sap.nextgen.vlm.api.CorpOverviewDataApiV3;
+import com.sap.nextgen.vlm.api.MTNAnalysisAPI;
 import com.sap.nextgen.vlm.cache.apis.ICacheServiceLoader;
 import com.sap.nextgen.vlm.cache.apis.impl.IndustryDataLoaderImpl;
 import com.sap.nextgen.vlm.cache.apis.impl.MasterDataLoaderImpl;
@@ -68,7 +69,7 @@ public class JerseyApplication extends ResourceConfig {
         
         // services V3
         register(CorpOverviewDataApiV3.class);
-        
+        register(MTNAnalysisAPI.class);
         
         // Swagger
         register(OpenApiResourceFactory.create(JerseyApplication.class));
