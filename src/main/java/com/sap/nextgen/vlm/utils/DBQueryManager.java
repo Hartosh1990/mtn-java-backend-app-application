@@ -16,7 +16,8 @@ public class DBQueryManager {
                System.out.println("Connected");
                Statement stmt = connection.createStatement();
                resultSet = stmt.executeQuery(sqlQuery);               
-          } catch (SQLException e) {        	  
+          } catch (SQLException e) { 
+        	 connection.close();
              throw new SQLException("Cause:" + e.getCause() + "SQL Error Code :" + e.getErrorCode());
           }
         }

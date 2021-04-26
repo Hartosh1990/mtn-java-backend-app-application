@@ -23,7 +23,8 @@ import com.sap.nextgen.vlm.utils.MTNFlags;
 public class MTNKpiMetricsDataProvider extends AbstractProvider implements DataProvider<MTNKpiMetricsRMO> {
     String mtnId;
     String clientProcessId;
-    String kpiId = "null";
+    String akpiId = "null";
+    String dkpiId = "null";
     int langId = 10;
     String jwtToken; 
     
@@ -48,8 +49,11 @@ public class MTNKpiMetricsDataProvider extends AbstractProvider implements DataP
     	if (queryParams.containsKey("langId")) {
     		langId = Integer.parseInt(requestBody.getQueryParams().get("langId").get(0));
     	}
-    	if (queryParams.containsKey("kpiId")) {
-    		kpiId = requestBody.getQueryParams().get("kpiId").get(0);
+    	if (queryParams.containsKey("kpiIdtobeAdded") && !queryParams.get("kpiIdtobeAdded").isEmpty() && queryParams.get("kpiIdtobeAdded").get(0) != null) {
+    		akpiId = queryParams.get("kpiIdtobeAdded").get(0);
+    	}
+    	if (queryParams.containsKey("kpiIdtobeDeleted") && !queryParams.get("kpiIdtobeDeleted").isEmpty() && queryParams.get("kpiIdtobeDeleted").get(0) != null) {
+    		dkpiId = queryParams.get("kpiIdtobeDeleted").get(0);
     	}
     	if (queryParams.containsKey("jwtToken")) {
     		jwtToken = requestBody.getQueryParams().get("jwtToken").get(0);
@@ -57,19 +61,21 @@ public class MTNKpiMetricsDataProvider extends AbstractProvider implements DataP
     	}
 
         final List<MTNKpiMetricsRMO> data = new ArrayList<MTNKpiMetricsRMO>();
+        ResultContainer<MTNKpiMetricsRMO> finalResultCont = new ResultContainer<>(data, MTNKpiMetricsRMO.class);
       	try {
       		Integer isQuestionDataAvailable = new MTNFlags(Integer.parseInt(mtnId)).isQuesDataAvailable;
       		System.out.println(isQuestionDataAvailable);
-      		String uri = baseUri +"/services/getMtnMetricsKpis?langId="+langId+"&clientProcessId="+clientProcessId+"&seqNo=0&mtnId="+mtnId+"&isQuestionDataAvailable="+isQuestionDataAvailable+"&kpiId="+kpiId;
+      		String uri = baseUri +"/services/getMtnMetricsKpis?langId="+langId+"&clientProcessId="+clientProcessId+"&seqNo=0&mtnId="+mtnId+"&isQuestionDataAvailable="+isQuestionDataAvailable+"&kpiId="+akpiId;
             JsonNode root = HttpRequestManager.getRootObjectFromGetNodeService(jwtToken, uri); 
     		JsonNode kpiList= root.get("results").get(0).get("kpiInfo");
     		System.out.println(kpiList);
     		ObjectMapper mapper = new ObjectMapper();
         	data.addAll(mapper.readValue(new TreeTraversingParser(kpiList),new TypeReference<List<MTNKpiMetricsRMO>>(){}));
+        	finalResultCont = new ResultContainer<>(data, MTNKpiMetricsRMO.class);
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			return new ResultContainer<>(data, MTNKpiMetricsRMO.class);
+		} finally {			
+			return finalResultCont;
 		}
     }
 

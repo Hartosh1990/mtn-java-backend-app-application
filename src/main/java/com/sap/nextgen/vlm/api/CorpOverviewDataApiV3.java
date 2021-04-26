@@ -1,5 +1,9 @@
 package com.sap.nextgen.vlm.api;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +29,11 @@ import com.sap.ida.eacp.nucleus.data.client.api.V3NucleusDataAPI;
 import com.sap.ida.eacp.nucleus.data.client.mapper.ResponseComponentMapper;
 import com.sap.ida.eacp.nucleus.data.client.model.request.DataRequestBody;
 import com.sap.ida.eacp.nucleus.data.client.model.request.ResultContainer;
+import com.sap.ida.eacp.nucleus.data.client.model.response.data.C4sComponentLabelDTO;
 import com.sap.ida.eacp.nucleus.data.client.model.response.data.ResponseComponentDTO;
 import com.sap.nextgen.vlm.constants.DataEndpoint;
 import com.sap.nextgen.vlm.providers.DataProvider;
+import com.sap.nextgen.vlm.utils.DBQueryManager;
 import com.sap.nextgen.vlm.utils.JWTTokenFactory;
 
 import io.swagger.v3.oas.annotations.Parameter;
@@ -50,7 +56,8 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
     private static final Logger LOG = LoggerFactory.getLogger(CorpOverviewDataApiV3.class);
     String type = "employee";
 
-    @Override
+    @SuppressWarnings("finally")
+	@Override
     public ResponseComponentDTO getData(@Parameter(example = "cloud_transactions_sales_adrm")@Schema(
             allowableValues = "cloud_transactions_sales_adrm_s4," +
             				  "get_company_search_results," + 
@@ -111,11 +118,72 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
             return new ResponseComponentDTO();
         }
 
+        ResponseComponentDTO c4sComponentDTO = new ResponseComponentDTO();
+        try {
+        	final ResultContainer result = dataProvider.loadData(requestBody);
 
-        final ResultContainer result = dataProvider.loadData(requestBody);
-
-
-        final ResponseComponentDTO c4sComponentDTO = ResponseComponentMapper.fromResultRmo(result.getData(), result.getClz());
-        return c4sComponentDTO;
+            c4sComponentDTO = ResponseComponentMapper.fromResultRmo(result.getData(), result.getClz());
+            Map<String, List<String>> queryParams = requestBody.getQueryParams();
+            if(DataEndpoint.GET_MTN_COMPANY_PROFILE.toString().equals(resourceId) || DataEndpoint.GET_MTN_PEER_PROFILE.toString().equals(resourceId)) {
+            	if (queryParams.containsKey("denomination")) {
+            		double factor = 1;
+            		String activeDen = getActiveDenomination(requestBody);
+            		if ("1".equals(activeDen)) {
+                		factor = 1000;
+                	}else if("3".equals(activeDen)){
+                		factor = 1000000000;
+                	}else {
+                		factor = 1000000;
+                	}
+            		c4sComponentDTO = getModifiedScaleFactorFromDenomination(c4sComponentDTO,factor);	
+            	}
+            		
+            }
+            
+        }catch(Exception e) {
+        	e.printStackTrace();
+        }finally {
+        	return c4sComponentDTO;
+        }
+        
     }
+
+	private String getActiveDenomination(DataRequestBody requestBody) throws SQLException {
+		 
+		String activeDen = requestBody.getQueryParams().get("denomination").get(0);
+		
+		if(activeDen == null || "null".equals(activeDen) || activeDen.isBlank()) {
+			System.out.println("null den is matched");
+			String mtnId = requestBody.getQueryParams().get("mtnId").get(0);
+			Connection conn =  null;
+			String sqlQuery = "select \"T0222_ID\" from \"T0402_MTN_Attributes\" a join \"T0401_MTN\" b on a.\"T0401_AutoID\" = b.\"T0401_AutoID\" where \"T0401_MTNID\" = "+ mtnId
+					+" and \"T0401_VersionNo\" = 1";
+			ResultSet rs = DBQueryManager.getResultSet(sqlQuery, conn);
+			if(rs != null) {
+				if(rs.next()) {
+					activeDen = rs.getString(1);
+				}
+				rs.close();
+			}
+		}else {
+			System.out.println("null den but not matched- The value is ");
+			System.out.println(activeDen);
+		}
+		return activeDen;
+		
+	}
+
+	private ResponseComponentDTO getModifiedScaleFactorFromDenomination(final ResponseComponentDTO c4sComponentDTO, final double factor) {
+		
+        	List<C4sComponentLabelDTO> companyProfileLabels = c4sComponentDTO.getMetadata().getLabels();
+        	List<C4sComponentLabelDTO> modifiedLabels = new ArrayList<C4sComponentLabelDTO>();
+        	companyProfileLabels.forEach((fieldDTO)-> {
+            	if("revenue".equals(fieldDTO.getFieldName()) || "operatingInc".equals(fieldDTO.getFieldName())) {
+            		fieldDTO.getValueFormatting().getDisplay().setScaleFactor(factor);
+            	}
+            	modifiedLabels.add(fieldDTO);
+            	});
+        c4sComponentDTO.getMetadata().setLabels(modifiedLabels);
+        return c4sComponentDTO;
+	}
 }

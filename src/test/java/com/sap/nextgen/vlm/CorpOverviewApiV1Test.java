@@ -319,6 +319,7 @@ public class CorpOverviewApiV1Test extends APITest {
         queryParams.put("mtnId", Lists.newArrayList("2602"));
         queryParams.put("ciqId", Lists.newArrayList("IQ126475"));
         queryParams.put("jwtToken", Lists.newArrayList(token));
+        queryParams.put("denomination", Lists.newArrayList("1"));
         final DataRequestBody dataRequestBody = new DataRequestBody();
         dataRequestBody.setQueryParams(queryParams);
 
@@ -367,7 +368,7 @@ public class CorpOverviewApiV1Test extends APITest {
     	JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
     	String token = jwtTokenFactory.getJWTToken("I314224", "budh.ram@sap.com", "Budh", "Ram", "employee");
         
-        final Response response = target("/v3/nucleus/data/apps/mtn/roles/role3/resources/getMtnAnalysis").queryParam("mtnId", "1864")
+        final Response response = target("/v3/nucleus/data/apps/mtn/roles/role3/resources/getMtnAnalysis").queryParam("mtnId", "2443")
         		.queryParam("jwtToken", token)
         		.queryParam("clientProcessId", "wefwef")
         		.queryParam("langId", "10")
@@ -376,6 +377,39 @@ public class CorpOverviewApiV1Test extends APITest {
    
         assertThat(response, isOk());
 
+    }
+    
+    @Test
+    public void testMTNAnalysisLevelAPI() {
+    	JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
+    	String token = jwtTokenFactory.getJWTToken("I314224", "budh.ram@sap.com", "Budh", "Ram", "employee");
+        
+        final Response response = target("/v3/nucleus/data/apps/mtn/roles/role3/resources/getMtnAnalysis").queryParam("mtnId", "2443")
+        		.queryParam("jwtToken", token)
+        		.queryParam("level", 3)
+        		.queryParam("clientProcessId", "testFromIntwoMTN")
+        		.queryParam("langId", "10")
+        		.request()
+                .get();
+   
+        assertThat(response, isOk());
+
+    }
+    
+    @Test
+    public void testMTNAnalysisLevel1API() {
+    	JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
+    	String token = jwtTokenFactory.getJWTToken("I314224", "budh.ram@sap.com", "Budh", "Ram", "employee");
+        
+        final Response response = target("/v3/nucleus/data/apps/mtn/roles/role3/resources/getMtnAnalysis").queryParam("mtnId", "2443")
+        		.queryParam("jwtToken", token)
+        		.queryParam("level", 1)
+        		.queryParam("clientProcessId", "testFromIntwoMTN")
+        		.queryParam("langId", "10")
+        		.request()
+                .get();
+   
+        assertThat(response, isOk());
     }
     
     
@@ -446,6 +480,32 @@ public class CorpOverviewApiV1Test extends APITest {
                 .path("roles/Display")
                 .path("resources")
                 .path(DataEndpoint.GET_MTN_KPI_METRICS.toString())
+                .request()
+                .post(Entity.json(dataRequestBody));
+        
+        assertThat(response, isOk());
+
+        final ResponseComponentDTO c4sComponentDTO = response.readEntity(ResponseComponentDTO.class);
+
+    }
+    
+    @Test
+    public void testGetMTNCompanyProfileWithNullDenomination() {
+        JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
+    	String token = jwtTokenFactory.getJWTToken("I303399", "hartosh.singh.bugra@sap.com", "Hartosh Singh", "Bugra", "employee");
+        Map<String, List<String>> queryParams = new HashMap<>();
+        queryParams.put("mtnId", Lists.newArrayList("2602"));
+        queryParams.put("ciqId", Lists.newArrayList("IQ126475"));
+        queryParams.put("jwtToken", Lists.newArrayList(token));
+        queryParams.put("denomination", Lists.newArrayList("null"));
+        final DataRequestBody dataRequestBody = new DataRequestBody();
+        dataRequestBody.setQueryParams(queryParams);
+
+        final Response response = target("v3/nucleus/data")
+                .path("apps/cicorpoverview")
+                .path("roles/Display")
+                .path("resources")
+                .path(DataEndpoint.GET_MTN_COMPANY_PROFILE.toString())
                 .request()
                 .post(Entity.json(dataRequestBody));
         

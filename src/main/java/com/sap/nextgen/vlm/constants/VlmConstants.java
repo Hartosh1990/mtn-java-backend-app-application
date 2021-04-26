@@ -14,7 +14,8 @@ public enum VlmConstants {
     results,
     kpiValue,
     baselineInfo,
-    isBaseCompany;
+    isBaseCompany,
+	isTTM;
 
     @JsonValue
     @Override

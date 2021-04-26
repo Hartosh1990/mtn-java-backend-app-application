@@ -93,6 +93,8 @@ public class MTNCompanyProfileProvider extends AbstractProvider implements DataP
     		if(connection != null) {
         		connection.close();    			
     		}
+
+    		
     	}
     	return companyText;
     }
