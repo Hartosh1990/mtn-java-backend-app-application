@@ -8,11 +8,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 
-import javax.inject.Inject;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
@@ -33,6 +30,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.sap.ida.eacp.nucleus.data.client.model.request.DataRequestBody;
+import com.sap.ida.eacp.nucleus.data.client.model.response.data.C4sComponentDataItem;
 import com.sap.ida.eacp.nucleus.data.client.model.response.data.ResponseComponentDTO;
 import com.sap.nextgen.vlm.constants.DataEndpoint;
 import com.sap.nextgen.vlm.constants.VlmConstants;
@@ -316,8 +314,8 @@ public class CorpOverviewApiV1Test extends APITest {
         JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
     	String token = jwtTokenFactory.getJWTToken("I303399", "hartosh.singh.bugra@sap.com", "Hartosh Singh", "Bugra", "employee");
         Map<String, List<String>> queryParams = new HashMap<>();
-        queryParams.put("mtnId", Lists.newArrayList("2602"));
-        queryParams.put("ciqId", Lists.newArrayList("IQ126475"));
+        queryParams.put("mtnId", Lists.newArrayList("2676"));
+        queryParams.put("ciqId", Lists.newArrayList("IQ874652"));
         queryParams.put("jwtToken", Lists.newArrayList(token));
         queryParams.put("denomination", Lists.newArrayList("1"));
         final DataRequestBody dataRequestBody = new DataRequestBody();
@@ -469,9 +467,11 @@ public class CorpOverviewApiV1Test extends APITest {
         JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
     	String token = jwtTokenFactory.getJWTToken("I303399", "hartosh.singh.bugra@sap.com", "Hartosh Singh", "Bugra", "employee");
         Map<String, List<String>> queryParams = new HashMap<>();
-        queryParams.put("mtnId", Lists.newArrayList("2556"));
+        queryParams.put("mtnId", Lists.newArrayList("2648"));
         queryParams.put("jwtToken", Lists.newArrayList(token));
         queryParams.put("clientProcessId", Lists.newArrayList("testFromTestCases"));
+        queryParams.put("kpiIdtobeAdded", Lists.newArrayList());
+        queryParams.put("kpiIdtobeDeleted", Lists.newArrayList());
         final DataRequestBody dataRequestBody = new DataRequestBody();
         dataRequestBody.setQueryParams(queryParams);
 
@@ -515,5 +515,183 @@ public class CorpOverviewApiV1Test extends APITest {
 
     }
     
+    @Test
+    public void testGetMTNKpiMetricsWithAddKPI() {
+        JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
+    	String token = jwtTokenFactory.getJWTToken("I303399", "hartosh.singh.bugra@sap.com", "Hartosh Singh", "Bugra", "employee");
+        Map<String, List<String>> queryParams = new HashMap<>();
+        queryParams.put("mtnId", Lists.newArrayList("2648"));
+        queryParams.put("jwtToken", Lists.newArrayList(token));
+        queryParams.put("clientProcessId", Lists.newArrayList("testFromTestCases"));
+        queryParams.put("kpiIdtobeAdded", Lists.newArrayList("12354"));
+        final DataRequestBody dataRequestBody = new DataRequestBody();
+        dataRequestBody.setQueryParams(queryParams);
+
+        final Response response = target("v3/nucleus/data")
+                .path("apps/cicorpoverview")
+                .path("roles/Display")
+                .path("resources")
+                .path(DataEndpoint.GET_MTN_KPI_METRICS.toString())
+                .request()
+                .post(Entity.json(dataRequestBody));
+        
+        assertThat(response, isOk());
+
+        final ResponseComponentDTO c4sComponentDTO = response.readEntity(ResponseComponentDTO.class);
+
+    }
     
-   }
+    @Test
+    public void testGetMTNKpiMetricsWithDeleteKPI() {
+        JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
+    	String token = jwtTokenFactory.getJWTToken("I303399", "hartosh.singh.bugra@sap.com", "Hartosh Singh", "Bugra", "employee");
+        Map<String, List<String>> queryParams = new HashMap<>();
+        queryParams.put("mtnId", Lists.newArrayList("2648"));
+        queryParams.put("jwtToken", Lists.newArrayList(token));
+        queryParams.put("clientProcessId", Lists.newArrayList("testFromTestCases"));
+        queryParams.put("kpiIdtobeDeleted", Lists.newArrayList("12354"));
+        final DataRequestBody dataRequestBody = new DataRequestBody();
+        dataRequestBody.setQueryParams(queryParams);
+
+        final Response response = target("v3/nucleus/data")
+                .path("apps/cicorpoverview")
+                .path("roles/Display")
+                .path("resources")
+                .path(DataEndpoint.GET_MTN_KPI_METRICS.toString())
+                .request()
+                .post(Entity.json(dataRequestBody));
+        
+        assertThat(response, isOk());
+
+        final ResponseComponentDTO c4sComponentDTO = response.readEntity(ResponseComponentDTO.class);
+
+    }
+    
+    @Test
+    public void testMTNTrendAnalysisForKPI() {
+        JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
+    	String token = jwtTokenFactory.getJWTToken("I303399", "hartosh.singh.bugra@sap.com", "Hartosh Singh", "Bugra", "employee");
+        Map<String, List<String>> queryParams = new HashMap<>();
+        queryParams.put("mtnId", Lists.newArrayList("2648"));
+        queryParams.put("jwtToken", Lists.newArrayList(token));
+        queryParams.put("clientProcessId", Lists.newArrayList("testFromTestCases"));
+        queryParams.put("years", Lists.newArrayList("2016","2017","2018"));
+        queryParams.put("kpiId", Lists.newArrayList("4712"));
+        final DataRequestBody dataRequestBody = new DataRequestBody();
+        dataRequestBody.setQueryParams(queryParams);
+
+        final Response response = target("v3/nucleus/data")
+                .path("apps/cicorpoverview")
+                .path("roles/Display")
+                .path("resources")
+                .path(DataEndpoint.MTN_TREND_ANALYSIS_FOR_KPI.toString())
+                .request()
+                .post(Entity.json(dataRequestBody));
+        
+        assertThat(response, isOk());
+
+        final ResponseComponentDTO c4sComponentDTO = response.readEntity(ResponseComponentDTO.class);
+
+    }
+    
+    @Test
+    public void testMTNAddDeletePeerProfile() {
+        mockResponseSequence("/response/TransactionsSalesADRMCloud.json");
+        JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
+    	String token = jwtTokenFactory.getJWTToken("I314224", "budh.ram@sap.com", "Budh", "Ram", "employee");
+        Map<String, List<String>> queryParams = new HashMap<>();
+        queryParams.put("mtnId", Lists.newArrayList("2648"));
+        queryParams.put("ciqId", Lists.newArrayList("IQ704634"));
+        queryParams.put("jwtToken", Lists.newArrayList(token));
+        queryParams.put("newPeerCIQ", Lists.newArrayList("IQ126475"));
+        queryParams.put("newPeerCompName", Lists.newArrayList("SAP SE"));
+        final DataRequestBody dataRequestBody = new DataRequestBody();
+        dataRequestBody.setQueryParams(queryParams);
+
+        final Response response = target("v3/nucleus/data")
+                .path("apps/cicorpoverview")
+                .path("roles/Display")
+                .path("resources")
+                .path(DataEndpoint.GET_MTN_PEER_PROFILE.toString())
+                .request()
+                .post(Entity.json(dataRequestBody));
+        
+        
+
+        final ResponseComponentDTO c4sComponentDTO = response.readEntity(ResponseComponentDTO.class);
+        List<C4sComponentDataItem> data = c4sComponentDTO.getData();
+        data.forEach((component)->{
+        	component.getFields().entrySet().forEach((field)->{
+        		if("companyName".equals(field.getKey())) {
+        			if("SAP SE".equals(field.getValue().getValue())) {
+        				String companyId = component.getFields().get("companyId").getValue().toString();
+        				//JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
+        		    	//String token = jwtTokenFactory.getJWTToken("I314224", "budh.ram@sap.com", "Budh", "Ram", "employee");
+        		        Map<String, List<String>> queryParams1 = new HashMap<>();
+        		        queryParams1.put("mtnId", Lists.newArrayList("2648"));
+        		        queryParams1.put("ciqId", Lists.newArrayList("IQ704634"));
+        		        queryParams1.put("jwtToken", Lists.newArrayList(token));
+        		        queryParams1.put("companyId", Lists.newArrayList(companyId));
+        		        final DataRequestBody dataRequestBody1 = new DataRequestBody();
+        		        dataRequestBody1.setQueryParams(queryParams1);
+        				final Response deleteResponse = target("v3/nucleus/data")
+        		                .path("apps/cicorpoverview")
+        		                .path("roles/Display")
+        		                .path("resources")
+        		                .path(DataEndpoint.GET_MTN_PEER_PROFILE.toString())
+        		                .request()
+        		                .post(Entity.json(dataRequestBody1));
+        		        
+        		        assertThat(deleteResponse, isOk());
+        			}
+        		}
+        	});
+        });
+        
+        assertThat(response, isOk());
+    }
+    
+    @Test
+    public void testMTNTrendAnalysisForCompany() {
+        JWTTokenFactory jwtTokenFactory = new JWTTokenFactory();
+    	String token = jwtTokenFactory.getJWTToken("I303399", "hartosh.singh.bugra@sap.com", "Hartosh Singh", "Bugra", "employee");
+        Map<String, List<String>> queryParams = new HashMap<>();
+        queryParams.put("mtnId", Lists.newArrayList("2648"));
+        queryParams.put("jwtToken", Lists.newArrayList(token));
+        queryParams.put("clientProcessId", Lists.newArrayList("testFromTestCases"));
+        queryParams.put("years", Lists.newArrayList("2016","2017","2018"));
+        final DataRequestBody dataRequestBody = new DataRequestBody();
+        dataRequestBody.setQueryParams(queryParams);
+
+        final Response response = target("v3/nucleus/data")
+                .path("apps/cicorpoverview")
+                .path("roles/Display")
+                .path("resources")
+                .path(DataEndpoint.MTN_TREND_ANALYSIS_FOR_COMPANY.toString())
+                .request()
+                .post(Entity.json(dataRequestBody));
+        
+        assertThat(response, isOk());
+
+        final ResponseComponentDTO c4sComponentDTO = response.readEntity(ResponseComponentDTO.class);
+
+    }
+    
+    @Test
+    public void testMTNCurrencyListFromCache() {
+    	final DataRequestBody dataRequestBody = new DataRequestBody();
+        final Response response = target("v3/nucleus/data")
+                .path("apps/cicorpoverview")
+                .path("roles/Display")
+                .path("resources")
+                .path(DataEndpoint.MTN_CURRENCY_LIST.toString())
+                .request()
+                .post(Entity.json(dataRequestBody));
+        
+        assertThat(response, isOk());
+
+        final ResponseComponentDTO c4sComponentDTO = response.readEntity(ResponseComponentDTO.class);
+
+    }
+    
+ }

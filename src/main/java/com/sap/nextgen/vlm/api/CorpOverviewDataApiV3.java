@@ -30,6 +30,7 @@ import com.sap.ida.eacp.nucleus.data.client.mapper.ResponseComponentMapper;
 import com.sap.ida.eacp.nucleus.data.client.model.request.DataRequestBody;
 import com.sap.ida.eacp.nucleus.data.client.model.request.ResultContainer;
 import com.sap.ida.eacp.nucleus.data.client.model.response.data.C4sComponentLabelDTO;
+import com.sap.ida.eacp.nucleus.data.client.model.response.data.FieldOrdersDTO;
 import com.sap.ida.eacp.nucleus.data.client.model.response.data.ResponseComponentDTO;
 import com.sap.nextgen.vlm.constants.DataEndpoint;
 import com.sap.nextgen.vlm.providers.DataProvider;
@@ -66,7 +67,10 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
             				  "get_mtn_company_profile," +
                               "save_mtn_company_profile_info" +
             				  "get_mtn_kpi_catalog,"+
-            				  "get_mtn_kpi_metrics"
+            				  "get_mtn_kpi_metrics,"+
+            				  "mtn_trend_analysis_for_kpi,"+
+            				  "mtn_trend_analysis_for_company,"+
+            				  "mtn_currency_list"
     ) String appId,String role,String resourceId, Boolean useMock,Long variantId, DataRequestBody requestBody) throws Exception {
 
         try {
@@ -124,7 +128,8 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
 
             c4sComponentDTO = ResponseComponentMapper.fromResultRmo(result.getData(), result.getClz());
             Map<String, List<String>> queryParams = requestBody.getQueryParams();
-            if(DataEndpoint.GET_MTN_COMPANY_PROFILE.toString().equals(resourceId) || DataEndpoint.GET_MTN_PEER_PROFILE.toString().equals(resourceId)) {
+            if(DataEndpoint.GET_MTN_COMPANY_PROFILE.toString().equals(resourceId) || DataEndpoint.GET_MTN_PEER_PROFILE.toString().equals(resourceId) ||
+            		DataEndpoint.GET_MTN_KPI_METRICS.toString().equals(resourceId)) {
             	if (queryParams.containsKey("denomination")) {
             		double factor = 1;
             		String activeDen = getActiveDenomination(requestBody);
@@ -135,9 +140,15 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
                 	}else {
                 		factor = 1000000;
                 	}
-            		c4sComponentDTO = getModifiedScaleFactorFromDenomination(c4sComponentDTO,factor);	
+            		c4sComponentDTO = getModifiedScaleFactorFromDenomination(c4sComponentDTO,factor,null);	
             	}
             		
+            }else if(DataEndpoint.MTN_TREND_ANALYSIS_FOR_KPI.toString().equals(resourceId) || DataEndpoint.MTN_TREND_ANALYSIS_FOR_COMPANY.toString().equals(resourceId)) {
+            	if(queryParams.containsKey("years") && !queryParams.get("years").isEmpty()) {
+            		List<String> years = queryParams.get("years");
+            		c4sComponentDTO = getModifiedScaleFactorFromDenomination(c4sComponentDTO, null, years);
+            		c4sComponentDTO = getModifiedVisibility(c4sComponentDTO, years);
+            	}
             }
             
         }catch(Exception e) {
@@ -173,17 +184,90 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
 		
 	}
 
-	private ResponseComponentDTO getModifiedScaleFactorFromDenomination(final ResponseComponentDTO c4sComponentDTO, final double factor) {
+	private ResponseComponentDTO getModifiedScaleFactorFromDenomination(final ResponseComponentDTO c4sComponentDTO, final Double factor, final List<String> years) {
 		
         	List<C4sComponentLabelDTO> companyProfileLabels = c4sComponentDTO.getMetadata().getLabels();
         	List<C4sComponentLabelDTO> modifiedLabels = new ArrayList<C4sComponentLabelDTO>();
         	companyProfileLabels.forEach((fieldDTO)-> {
-            	if("revenue".equals(fieldDTO.getFieldName()) || "operatingInc".equals(fieldDTO.getFieldName())) {
+            	if(factor != null && "revenue".equals(fieldDTO.getFieldName()) || "operatingInc".equals(fieldDTO.getFieldName()) || "monetryBenefit".equals(fieldDTO.getFieldName())) {
             		fieldDTO.getValueFormatting().getDisplay().setScaleFactor(factor);
+            	}else if(years != null) {
+            		switch(fieldDTO.getLabel()) {
+            			case "Year1":
+            				if(years.size() > 0) {
+            					fieldDTO.setLabel(years.get(0));
+            				}
+            				break;
+            			case "Year2":
+            				if(years.size() > 1) {
+            					fieldDTO.setLabel(years.get(1));
+            				}
+            				break;
+            			case "Year3":
+            				if(years.size() > 2) {
+            					fieldDTO.setLabel(years.get(2));
+            				}
+            				break;
+            			case "Year4":
+            				if(years.size() > 3) {
+            					fieldDTO.setLabel(years.get(3));
+            				}
+            				break;
+            			case "Year5":
+            				if(years.size() > 4) {
+            					fieldDTO.setLabel(years.get(4));
+            				}
+            				break;
+            		} 
+            		
             	}
+            	//if()
             	modifiedLabels.add(fieldDTO);
             	});
         c4sComponentDTO.getMetadata().setLabels(modifiedLabels);
         return c4sComponentDTO;
 	}
+	
+	private ResponseComponentDTO getModifiedVisibility(final ResponseComponentDTO c4sComponentDTO, final List<String> years) {
+		
+    	List<FieldOrdersDTO> existinglabelOrders = c4sComponentDTO.getMetadata().getFieldOrders();
+    	List<FieldOrdersDTO> modifiedLabelOrders = new ArrayList<FieldOrdersDTO>();
+    	existinglabelOrders.forEach((fieldDTO)-> {
+        	
+        	if(years != null) {
+        		switch(fieldDTO.getFieldName()) {
+        			case "kpiValue1":
+        				if(years.size() < 1) {
+        					fieldDTO.setIsVisible(false);
+        				}
+        				break;
+        			case "kpiValue2":
+        				if(years.size() < 2) {
+        					fieldDTO.setIsVisible(false);
+        				}
+        				break;
+        			case "kpiValue3":
+        				if(years.size() < 3) {
+        					fieldDTO.setIsVisible(false);
+        				}
+        				break;
+        			case "kpiValue4":
+        				if(years.size() < 4) {
+        					fieldDTO.setIsVisible(false);
+        				}
+        				break;
+        			case "kpiValue5":
+        				if(years.size() < 5) {
+        					fieldDTO.setIsVisible(false);
+        				}
+        				break;
+        		} 
+        		
+        	}
+        	//if()
+        	modifiedLabelOrders.add(fieldDTO);
+        	});
+    c4sComponentDTO.getMetadata().setFieldOrders(modifiedLabelOrders);
+    return c4sComponentDTO;
+}
 }

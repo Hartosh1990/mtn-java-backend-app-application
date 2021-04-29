@@ -23,8 +23,8 @@ import com.sap.nextgen.vlm.utils.MTNFlags;
 public class MTNKpiMetricsDataProvider extends AbstractProvider implements DataProvider<MTNKpiMetricsRMO> {
     String mtnId;
     String clientProcessId;
-    String akpiId = "null";
-    String dkpiId = "null";
+    String akpiId = null;
+    String dkpiId = null;
     int langId = 10;
     String jwtToken; 
     
@@ -65,9 +65,21 @@ public class MTNKpiMetricsDataProvider extends AbstractProvider implements DataP
       	try {
       		Integer isQuestionDataAvailable = new MTNFlags(Integer.parseInt(mtnId)).isQuesDataAvailable;
       		System.out.println(isQuestionDataAvailable);
-      		String uri = baseUri +"/services/getMtnMetricsKpis?langId="+langId+"&clientProcessId="+clientProcessId+"&seqNo=0&mtnId="+mtnId+"&isQuestionDataAvailable="+isQuestionDataAvailable+"&kpiId="+akpiId;
+      		String uri = baseUri +"/services/getMtnMetricsKpis?langId="+langId+"&clientProcessId="+clientProcessId+"&seqNo=0&mtnId="+mtnId+"&isQuestionDataAvailable="+isQuestionDataAvailable;
+      		if(akpiId != null) {
+      			uri = uri+"&kpiId="+akpiId;	
+      		}
+      		if(dkpiId!= null) {
+      			String duri = baseUri+"/services/deleteMtnKpi?mtnId="+mtnId+"&kpiId="+dkpiId+"&langId="+langId+"&clientProcessId="+clientProcessId+"&seqNo=0";
+      			JsonNode dRoot = HttpRequestManager.getRootObjectFromGetNodeService(jwtToken, duri);
+      			if(dRoot != null && dRoot.get("success")!= null) {
+      				if(dRoot.get("success").asBoolean()) {
+      					System.out.println("The KPI with id "+dkpiId + " is deleted successfully");
+      				};
+      			}
+      		}
             JsonNode root = HttpRequestManager.getRootObjectFromGetNodeService(jwtToken, uri); 
-    		JsonNode kpiList= root.get("results").get(0).get("kpiInfo");
+            JsonNode kpiList= root.get("results").get(0).get("kpiInfo");
     		System.out.println(kpiList);
     		ObjectMapper mapper = new ObjectMapper();
         	data.addAll(mapper.readValue(new TreeTraversingParser(kpiList),new TypeReference<List<MTNKpiMetricsRMO>>(){}));

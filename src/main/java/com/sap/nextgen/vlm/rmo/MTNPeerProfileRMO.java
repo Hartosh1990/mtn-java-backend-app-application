@@ -25,7 +25,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(
-value = {"isTTM", "companyId","region", "industry", "currency"//,"updatedDate","operInc","employees", "revenue", "industry",
+value = {"region", "industry", "currency"//,"updatedDate","operInc","employees", "revenue", "industry",
 		//"fyUpdatedDate", "denomination",  "country"
 		}
 )
@@ -48,6 +48,7 @@ public class MTNPeerProfileRMO {
 	public static final String EMPLOYEES = "employees";
 	public static final String ISTTM = "isTTM";	
 	public static final String COUNTRY = "country";
+	public static final String COMPANYID= "companyId";
 	//public static final String OPERATING_INCOME_PERC = "operIncPerc";
 	//public static final String REVENUE_PERC = "revenuePerc";
 	
@@ -87,6 +88,9 @@ public class MTNPeerProfileRMO {
     @Dimension(label="Country", rank = 6)
     private String country;
     
+    @JsonProperty(COMPANYID)
+    @Dimension(label="Company Id", isVisible = false, rank=7)
+    private int companyId;
     
     @JsonProperty(ISTTM)
     public void getIsTTMFlag(short isTTM) {
@@ -137,4 +141,5 @@ public class MTNPeerProfileRMO {
     		
     	});
     }
+    
 }

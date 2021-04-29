@@ -25,7 +25,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(
-value = {"ciq_id","mtnId", "isTTM", "companyId", "isPeerDataAvailable", "isQuesDataAvailable","isTrendAnalysisAvailable", "mtnName",
+value = {"ciq_id","mtnId", "companyId", "isPeerDataAvailable", "isQuesDataAvailable","isTrendAnalysisAvailable", "mtnName",
 		"region"//,"updatedDate","operInc","employees", "revenue", "industry",
 		//"fyUpdatedDate", "denomination",  "country"
 		}
@@ -94,6 +94,10 @@ public class MTNCompanyProfileRMO {
     @Dimension(label="Business Description")
     private String businessDesc;
     
+    @JsonProperty("periodType")
+    @Dimension(label="Is TTM")
+    private String periodType;
+    
     @JsonProperty(CURRENCY)
     public void unpackCurrencyValue(Map<String,Integer> currencyMap) throws ClientProtocolException, ExecutionException, IOException {
     	try {
@@ -106,6 +110,11 @@ public class MTNCompanyProfileRMO {
     @JsonProperty(ISTTM)
     public void getIsTTMFlag(short isTTM) {
     	this.isTTM = isTTM;
+    	if(isTTM == 0) {
+    		this.periodType = "FY"; 
+    	}else {
+    		this.periodType = "TTM";
+    	}
     }
     
     @JsonProperty(REVENUE)

@@ -66,7 +66,7 @@ public class SaveMTNCompanyProvider extends AbstractProvider implements DataProv
 
         
     	HttpPost post = new HttpPost(baseUri +"/services/saveCompanyForMtn?langId=10&clientProcessId=20210304140829nlmahf2b65s6&seqNo=8");
-        String json = "{\"Response\": [{\"ciq_id\" :\"" + ciqId + "\", \"companyName\": \"" + companyName + "\", \"isMtnCompany\": \"" + isMtnCompany + "\", \"mtnid\":" + mtnId + "}]}";
+        String json = "{\"Response\": [{\"ciq_id\" :\"" + ciqId + "\", \"companyName\": \"" + companyName + "\", \"isMtnCompany\": \"" + isMtnCompany + "\", \"mtnid\":" + mtnId + ", \"isIntwoMTN\": " + 1 + "}]}";
         try {
 			StringEntity entity = new StringEntity(json);
 			post.setEntity(entity);			

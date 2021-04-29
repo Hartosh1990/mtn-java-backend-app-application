@@ -1,5 +1,7 @@
 package com.sap.nextgen.vlm.utils;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class NullHandlingUtility {
@@ -22,5 +24,14 @@ public class NullHandlingUtility {
 			return Long.parseLong(value.asText());
 		}
 		return null;
+	}
+	
+	/* This function will give index of sub set string at given index from full set  
+	 */
+	public static int getIndex(List<String> subSet, List<String> fullSet, int subSetIndex) {
+		if(subSetIndex < subSet.size() && subSet.get(subSetIndex)!=null) {
+			return fullSet.indexOf(subSet.get(subSetIndex));	
+		}
+		return -1;
 	}
 }
