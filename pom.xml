@@ -141,7 +141,7 @@
         <dependency>
    		 <groupId>com.sap.ida.eacp.nucleus</groupId>
    		 <artifactId>nucleus-data-client</artifactId>
-   		 <version>4.0.0</version>
+   		 <version>4.1.1</version>
 		</dependency>
 
 
