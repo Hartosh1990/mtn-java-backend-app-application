@@ -3,6 +3,7 @@ package com.sap.nextgen.vlm.utils;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -16,6 +17,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ch.qos.logback.core.util.StatusListenerConfigHelper;
 
 public class HttpRequestManager {
 	
@@ -33,6 +36,22 @@ public class HttpRequestManager {
 		httpclient.close();
 		httpResponse.close();
 		return root;
+	}
+	
+	public static boolean callGetNodeService(String jwtToken, String uri)
+			throws IOException, ClientProtocolException, JsonProcessingException, JsonMappingException, SQLException {
+		boolean isOk = false;
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpGet get = new HttpGet(uri);
+		get.setHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
+		get.setHeader("Cookie", "UserData="+jwtToken);
+		CloseableHttpResponse httpResponse = httpclient.execute(get);
+		if(HttpStatus.SC_OK == httpResponse.getStatusLine().getStatusCode()) {
+			isOk = true;
+		}
+		httpclient.close();
+		httpResponse.close();
+		return isOk;
 	}
 	
 	public static JsonNode getRootObjectFromPostNodeService(String jwtToken, String uri, String body)

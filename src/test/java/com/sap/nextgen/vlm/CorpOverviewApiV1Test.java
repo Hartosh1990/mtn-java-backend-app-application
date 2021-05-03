@@ -523,7 +523,7 @@ public class CorpOverviewApiV1Test extends APITest {
         queryParams.put("mtnId", Lists.newArrayList("2648"));
         queryParams.put("jwtToken", Lists.newArrayList(token));
         queryParams.put("clientProcessId", Lists.newArrayList("testFromTestCases"));
-        queryParams.put("kpiIdtobeAdded", Lists.newArrayList("12354"));
+        queryParams.put("kpiIdtobeAdded", Lists.newArrayList("12356","12358"));
         final DataRequestBody dataRequestBody = new DataRequestBody();
         dataRequestBody.setQueryParams(queryParams);
 
@@ -549,7 +549,7 @@ public class CorpOverviewApiV1Test extends APITest {
         queryParams.put("mtnId", Lists.newArrayList("2648"));
         queryParams.put("jwtToken", Lists.newArrayList(token));
         queryParams.put("clientProcessId", Lists.newArrayList("testFromTestCases"));
-        queryParams.put("kpiIdtobeDeleted", Lists.newArrayList("12354"));
+        queryParams.put("kpiIdtobeDeleted", Lists.newArrayList("12356","12358"));
         final DataRequestBody dataRequestBody = new DataRequestBody();
         dataRequestBody.setQueryParams(queryParams);
 

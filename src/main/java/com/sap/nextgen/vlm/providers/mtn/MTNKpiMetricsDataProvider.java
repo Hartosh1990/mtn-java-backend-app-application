@@ -1,12 +1,18 @@
 package com.sap.nextgen.vlm.providers.mtn;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.http.client.ClientProtocolException;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TreeTraversingParser;
@@ -23,8 +29,8 @@ import com.sap.nextgen.vlm.utils.MTNFlags;
 public class MTNKpiMetricsDataProvider extends AbstractProvider implements DataProvider<MTNKpiMetricsRMO> {
     String mtnId;
     String clientProcessId;
-    String akpiId = null;
-    String dkpiId = null;
+    List<String> akpiId = null;
+    List<String> dkpiId = null;
     int langId = 10;
     String jwtToken; 
     
@@ -50,10 +56,10 @@ public class MTNKpiMetricsDataProvider extends AbstractProvider implements DataP
     		langId = Integer.parseInt(requestBody.getQueryParams().get("langId").get(0));
     	}
     	if (queryParams.containsKey("kpiIdtobeAdded") && !queryParams.get("kpiIdtobeAdded").isEmpty() && queryParams.get("kpiIdtobeAdded").get(0) != null) {
-    		akpiId = queryParams.get("kpiIdtobeAdded").get(0);
+    		akpiId = queryParams.get("kpiIdtobeAdded");
     	}
     	if (queryParams.containsKey("kpiIdtobeDeleted") && !queryParams.get("kpiIdtobeDeleted").isEmpty() && queryParams.get("kpiIdtobeDeleted").get(0) != null) {
-    		dkpiId = queryParams.get("kpiIdtobeDeleted").get(0);
+    		dkpiId = queryParams.get("kpiIdtobeDeleted");
     	}
     	if (queryParams.containsKey("jwtToken")) {
     		jwtToken = requestBody.getQueryParams().get("jwtToken").get(0);
@@ -65,18 +71,35 @@ public class MTNKpiMetricsDataProvider extends AbstractProvider implements DataP
       	try {
       		Integer isQuestionDataAvailable = new MTNFlags(Integer.parseInt(mtnId)).isQuesDataAvailable;
       		System.out.println(isQuestionDataAvailable);
-      		String uri = baseUri +"/services/getMtnMetricsKpis?langId="+langId+"&clientProcessId="+clientProcessId+"&seqNo=0&mtnId="+mtnId+"&isQuestionDataAvailable="+isQuestionDataAvailable;
+      		String uri = baseUri +"/services/getMtnMetricsKpis?langId="+langId+"&clientProcessId="+clientProcessId+"&seqNo=0&mtnId="+mtnId+"&isQuestionDataAvailable="+isQuestionDataAvailable; 
       		if(akpiId != null) {
-      			uri = uri+"&kpiId="+akpiId;	
+      			akpiId.forEach((kpiId)->{
+      				String addUri = baseUri +"/services/getMtnMetricsKpis?langId="+langId+"&clientProcessId="+clientProcessId+"&seqNo=0&mtnId="+mtnId+"&isQuestionDataAvailable="+isQuestionDataAvailable;
+      				addUri = uri+"&kpiId="+kpiId;
+      				try {
+						HttpRequestManager.callGetNodeService(jwtToken, addUri);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+      			});
+      			
       		}
       		if(dkpiId!= null) {
-      			String duri = baseUri+"/services/deleteMtnKpi?mtnId="+mtnId+"&kpiId="+dkpiId+"&langId="+langId+"&clientProcessId="+clientProcessId+"&seqNo=0";
-      			JsonNode dRoot = HttpRequestManager.getRootObjectFromGetNodeService(jwtToken, duri);
-      			if(dRoot != null && dRoot.get("success")!= null) {
-      				if(dRoot.get("success").asBoolean()) {
-      					System.out.println("The KPI with id "+dkpiId + " is deleted successfully");
-      				};
-      			}
+      			dkpiId.forEach((kpiId)->{
+      				String duri = baseUri+"/services/deleteMtnKpi?mtnId="+mtnId+"&kpiId="+kpiId+"&langId="+langId+"&clientProcessId="+clientProcessId+"&seqNo=0";
+					try {
+						JsonNode dRoot = HttpRequestManager.getRootObjectFromGetNodeService(jwtToken, duri);
+						if(dRoot != null && dRoot.get("success")!= null) {
+	          				if(dRoot.get("success").asBoolean()) {
+	          					System.out.println("The KPI with id "+dkpiId + " is deleted successfully");
+	          				};
+	          			}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+          				
+      			});
+      			
       		}
             JsonNode root = HttpRequestManager.getRootObjectFromGetNodeService(jwtToken, uri); 
             JsonNode kpiList= root.get("results").get(0).get("kpiInfo");
