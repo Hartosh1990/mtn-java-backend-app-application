@@ -28,7 +28,7 @@ public class MTNTrendAnalysisKpiRMO {
 	
 	
 	@JsonProperty("name")
-	@Dimension(label="Name")
+//	@Dimension(label="Name")
 	private String name;
 	
 	@JsonProperty("Year1")
@@ -56,14 +56,15 @@ public class MTNTrendAnalysisKpiRMO {
 	private Double kpiValue5; //= this.givenYrskpiValues.get(4);
 	
 	@JsonProperty("id")
-	@Dimension(label="Kpis", isVisible = false)
-	private Integer id;
+	@Dimension(label="Kpis", textColumn = "name")
+	private Integer kpi;
 	
 	@JsonProperty("decimalPlaces")
 	private Integer decimalPlaces;
 	
 	@JsonProperty("isCurrency")
 	private Integer isCurrency;
+	
 	
 	@JsonProperty("kpiData")
 	public void unpackKPIsValues(JsonNode kpiData) throws IOException {

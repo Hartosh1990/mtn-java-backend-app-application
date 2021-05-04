@@ -23,6 +23,8 @@ public class MTNTrendAnalysisCompanyRMO {
 	private List<String> allYrs;
 	
 	@JacksonInject("gvnYrs")
+	@JsonProperty("yrs")
+	@Dimension(label="years")
 	private List<String> gvnYrs;
 	
 	
@@ -58,21 +60,25 @@ public class MTNTrendAnalysisCompanyRMO {
 	@Dimension(label="Is Base Company", isVisible = false)
 	private String isBaseCompany;
 	
+	@JsonProperty("kpiValues")
+	@Dimension(label="KPI Values")
+	private List<Double> kpiValues;
+	
 	@JsonProperty("id")
 	public void unpackKPIsValues(Integer id) {
 		if(allYrsCompanykpiValues!=null) {
-			List<Double> kpiValues = allYrsCompanykpiValues.get(id);
-			int index0 = NullHandlingUtility.getIndex(gvnYrs, allYrs , 0);
-			int index1 = NullHandlingUtility.getIndex(gvnYrs, allYrs , 1);
-			int index2 = NullHandlingUtility.getIndex(gvnYrs, allYrs , 2);
-			int index3 = NullHandlingUtility.getIndex(gvnYrs, allYrs , 3);
-			int index4 = NullHandlingUtility.getIndex(gvnYrs, allYrs , 4);
-			
-			kpiValue1 = index0 >= 0 && index0 < 5 ? kpiValues.get(index0):null;
-			kpiValue2 = index1 >= 0 && index1 < 5 ? kpiValues.get(index1):null;
-			kpiValue3 = index2 >= 0 && index2 < 5 ? kpiValues.get(index2):null;
-			kpiValue4 = index3 >= 0 && index3 < 5 ? kpiValues.get(index3):null;
-			kpiValue5 = index4 >= 0 && index4 < 5 ? kpiValues.get(index4):null;
+			kpiValues = allYrsCompanykpiValues.get(id);
+//			int index0 = NullHandlingUtility.getIndex(gvnYrs, allYrs , 0);
+//			int index1 = NullHandlingUtility.getIndex(gvnYrs, allYrs , 1);
+//			int index2 = NullHandlingUtility.getIndex(gvnYrs, allYrs , 2);
+//			int index3 = NullHandlingUtility.getIndex(gvnYrs, allYrs , 3);
+//			int index4 = NullHandlingUtility.getIndex(gvnYrs, allYrs , 4);
+//			
+//			kpiValue1 = index0 >= 0 && index0 < 5 ? kpiValues.get(index0):null;
+//			kpiValue2 = index1 >= 0 && index1 < 5 ? kpiValues.get(index1):null;
+//			kpiValue3 = index2 >= 0 && index2 < 5 ? kpiValues.get(index2):null;
+//			kpiValue4 = index3 >= 0 && index3 < 5 ? kpiValues.get(index3):null;
+//			kpiValue5 = index4 >= 0 && index4 < 5 ? kpiValues.get(index4):null;
 			
 		}
 	}
