@@ -63,7 +63,7 @@ public class MTNKpiMetricsRMO {
     
 
     @JsonProperty("lggingPeerValue")
-    @Measure(label="Value 1", rank = 2,numberOfDecimalPlaces = 2)
+    @Measure(label="Lagging Peer Value", rank = 2,numberOfDecimalPlaces = 2)
     private Double laggingPeerValue;
     
     @JsonProperty("companyPerformance")
@@ -76,7 +76,7 @@ public class MTNKpiMetricsRMO {
     
     
     @JsonProperty("leadingPeerValue")
-    @Measure(label="Value 2", rank = 5,numberOfDecimalPlaces = 2)
+    @Measure(label="Leading Peer Value", rank = 5,numberOfDecimalPlaces = 2)
     private Double leadingPeerValue;
     
 

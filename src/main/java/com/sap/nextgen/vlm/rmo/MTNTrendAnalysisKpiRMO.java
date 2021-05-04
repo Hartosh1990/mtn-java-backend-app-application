@@ -56,7 +56,7 @@ public class MTNTrendAnalysisKpiRMO {
 	private Double kpiValue5; //= this.givenYrskpiValues.get(4);
 	
 	@JsonProperty("id")
-	@Dimension(label="KPI Id", isVisible = false)
+	@Dimension(label="Kpis", isVisible = false)
 	private Integer id;
 	
 	@JsonProperty("decimalPlaces")

@@ -30,6 +30,7 @@ import com.sap.ida.eacp.nucleus.data.client.mapper.ResponseComponentMapper;
 import com.sap.ida.eacp.nucleus.data.client.model.request.DataRequestBody;
 import com.sap.ida.eacp.nucleus.data.client.model.request.ResultContainer;
 import com.sap.ida.eacp.nucleus.data.client.model.response.data.C4sComponentLabelDTO;
+import com.sap.ida.eacp.nucleus.data.client.model.response.data.ComponentTypes;
 import com.sap.ida.eacp.nucleus.data.client.model.response.data.FieldOrdersDTO;
 import com.sap.ida.eacp.nucleus.data.client.model.response.data.ResponseComponentDTO;
 import com.sap.nextgen.vlm.constants.DataEndpoint;
@@ -128,6 +129,9 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
 
             c4sComponentDTO = ResponseComponentMapper.fromResultRmo(result.getData(), result.getClz());
             Map<String, List<String>> queryParams = requestBody.getQueryParams();
+            if(DataEndpoint.MTN_TREND_ANALYSIS_FOR_KPI.toString().equals(resourceId)) {
+            	c4sComponentDTO.getMetadata().setType(ComponentTypes.LINE_CHART);
+            }
             if(DataEndpoint.GET_MTN_COMPANY_PROFILE.toString().equals(resourceId) || DataEndpoint.GET_MTN_PEER_PROFILE.toString().equals(resourceId) ||
             		DataEndpoint.GET_MTN_KPI_METRICS.toString().equals(resourceId)) {
             	if (queryParams.containsKey("denomination")) {
