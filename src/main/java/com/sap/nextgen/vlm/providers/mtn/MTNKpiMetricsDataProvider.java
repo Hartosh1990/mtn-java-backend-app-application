@@ -85,7 +85,7 @@ public class MTNKpiMetricsDataProvider extends AbstractProvider implements DataP
 						JsonNode dRoot = HttpRequestManager.getRootObjectFromGetNodeService(jwtToken, duri);
 						if(dRoot != null && dRoot.get("success")!= null) {
 	          				if(dRoot.get("success").asBoolean()) {
-	          					System.out.println("The KPI with id "+dkpiId + " is deleted successfully");
+	          					System.out.println("The KPI with id "+kpiId + " is deleted successfully");
 	          				};
 	          			}
 					} catch (Exception e) {

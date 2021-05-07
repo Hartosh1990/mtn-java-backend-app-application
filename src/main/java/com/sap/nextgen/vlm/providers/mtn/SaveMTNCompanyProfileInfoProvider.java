@@ -1,19 +1,10 @@
 package com.sap.nextgen.vlm.providers.mtn;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +14,7 @@ import com.sap.nextgen.vlm.constants.DataEndpoint;
 import com.sap.nextgen.vlm.providers.AbstractProvider;
 import com.sap.nextgen.vlm.providers.DataProvider;
 import com.sap.nextgen.vlm.rmo.SaveMTNCustomerProfileRMO;
+import com.sap.nextgen.vlm.utils.HttpRequestManager;
 
 public class SaveMTNCompanyProfileInfoProvider extends AbstractProvider implements DataProvider<SaveMTNCustomerProfileRMO> {
 	String mtnId;
@@ -30,16 +22,22 @@ public class SaveMTNCompanyProfileInfoProvider extends AbstractProvider implemen
 	String id;
 	String newValue;
     String jwtToken; 
+    int langId = 10;
 
 	@Override
     public DataEndpoint getDataEndpoint() {
         return DataEndpoint.SAVE_MTN_COMPANY_PROFILE_INFO;
     }
 	
-    @SuppressWarnings("finally")
 	@Override
     public ResultContainer<SaveMTNCustomerProfileRMO> loadData(DataRequestBody requestBody) {
     	Map<String, List<String>> queryParams = Optional.ofNullable(requestBody.getQueryParams()).orElse(new HashMap<>());
+    	List<String> akpiId = null;
+        List<String> dkpiId = null;
+        final String clientProcessId;
+        if (queryParams.containsKey("langId")) {
+    		langId = Integer.parseInt(requestBody.getQueryParams().get("langId").get(0));
+    	}
     	if (queryParams.containsKey("mtnId")) {
     		mtnId = requestBody.getQueryParams().get("mtnId").get(0);
     	}
@@ -48,41 +46,67 @@ public class SaveMTNCompanyProfileInfoProvider extends AbstractProvider implemen
     	}
     	if (queryParams.containsKey("newValue")) {
     		newValue = requestBody. getQueryParams().get("newValue").get(0);
-    	}    	
+    	}    
+    	if (queryParams.containsKey("clientProcessId") && queryParams.get("clientProcessId")!=null) {
+    		clientProcessId = requestBody.getQueryParams().get("clientProcessId").get(0);
+    	}else {
+    		clientProcessId = mtnId+"saveMTNCompanyProfileInfo+_intwomtn";
+    	}
     	if (queryParams.containsKey("jwtToken")) {
     		jwtToken = requestBody.getQueryParams().get("jwtToken").get(0);
-    		System.out.println(jwtToken);
+    	}
+    	if (queryParams.containsKey("valuestobeAdded") && !queryParams.get("valuestobeAdded").isEmpty() && queryParams.get("valuestobeAdded").get(0) != null) {
+    		akpiId = queryParams.get("valuestobeAdded");
+    	}
+    	if (queryParams.containsKey("valuestobeDeleted") && !queryParams.get("valuestobeDeleted").isEmpty() && queryParams.get("valuestobeDeleted").get(0) != null) {
+    		dkpiId = queryParams.get("valuestobeDeleted");
     	}
         final List<SaveMTNCustomerProfileRMO> data = new ArrayList<SaveMTNCustomerProfileRMO>();
         
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        
-    	HttpPost post = new HttpPost(baseUri +"/services/saveMtnValue?langId=10&clientProcessId=20210304140829nlmahf2b65s6&seqNo=8&mtnId=" + mtnId + "&saveType=" + saveType);
-        String json = "{\"id\" :\"" + mtnId + "\", \"newValue\": \"" + newValue + "\"}";
-        try {
-			StringEntity entity = new StringEntity(json);
-			post.setEntity(entity);			
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} finally {
-			post.setHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, "application/json;charset=UTF-8");
-			post.setHeader("Cookie", "UserData="+jwtToken);
-	    	CloseableHttpResponse httpResponse;
-	    	try {
-				httpResponse = httpclient.execute(post);
-				String response = EntityUtils.toString(httpResponse.getEntity());
-		    	ObjectMapper mapper = new ObjectMapper();
-				JsonNode root = mapper.readTree(response); 
-				data.add(mapper.treeToValue(root, SaveMTNCustomerProfileRMO.class)); 		    	
-	    		
-	    	} catch(IOException e) {
+        ObjectMapper mapper = new ObjectMapper();
+        if(saveType!= null && Integer.parseInt(saveType) == 11) { // To support KPI add/delete in save call..
+        	if(akpiId != null) {
+      			akpiId.forEach((kpiId)->{
+      				String addUri = baseUri +"/services/getMtnMetricsKpis?langId="+langId+"&clientProcessId="+clientProcessId+"&seqNo=0&mtnId="+mtnId;
+      				addUri = addUri+"&kpiId="+kpiId;
+      				try {
+						HttpRequestManager.callGetNodeService(jwtToken, addUri);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+      			});
+      			
+      		}
+        	if(dkpiId!= null) {
+      			dkpiId.forEach((kpiId)->{
+      				String duri = baseUri+"/services/deleteMtnKpi?mtnId="+mtnId+"&kpiId="+kpiId+"&langId="+langId+"&clientProcessId="+clientProcessId+"&seqNo=0";
+					try {
+						JsonNode dRoot = HttpRequestManager.getRootObjectFromGetNodeService(jwtToken, duri);
+						if(dRoot != null && dRoot.get("success")!= null) {
+	          				if(dRoot.get("success").asBoolean()) {
+	          					System.out.println("The KPI with id "+kpiId + " is deleted successfully");
+	          				};
+	          			}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+          				
+      			});
+      			
+      		}
+        }else {
+        	String finalUri = baseUri +"/services/saveMtnValue?langId=10&clientProcessId=20210304140829nlmahf2b65s6&seqNo=8&mtnId=" + mtnId + "&saveType=" + saveType;
+        	String json = "{\"id\" :\"" + mtnId + "\", \"newValue\": \"" + newValue + "\"}";
+        	try {
+        		JsonNode root = HttpRequestManager.getRootObjectFromPostNodeService(jwtToken, finalUri, json);
+        		data.add(mapper.treeToValue(root, SaveMTNCustomerProfileRMO.class));
+        	} catch (Exception e) {
 				e.printStackTrace();
-	    	} finally {
-				return new ResultContainer<>(data, SaveMTNCustomerProfileRMO.class);
-	    	}
-		}
+			} 
+        }
+        
+        return new ResultContainer<>(data, SaveMTNCustomerProfileRMO.class);
+        
     }
 
 }

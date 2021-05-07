@@ -34,6 +34,7 @@ import com.sap.ida.eacp.nucleus.data.client.model.response.data.ComponentTypes;
 import com.sap.ida.eacp.nucleus.data.client.model.response.data.FieldOrdersDTO;
 import com.sap.ida.eacp.nucleus.data.client.model.response.data.ResponseComponentDTO;
 import com.sap.nextgen.vlm.constants.DataEndpoint;
+import com.sap.nextgen.vlm.constants.DenominationConstants;
 import com.sap.nextgen.vlm.providers.DataProvider;
 import com.sap.nextgen.vlm.utils.DBQueryManager;
 import com.sap.nextgen.vlm.utils.JWTTokenFactory;
@@ -137,9 +138,9 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
             	if (queryParams.containsKey("denomination")) {
             		double factor = 1;
             		String activeDen = getActiveDenomination(requestBody);
-            		if ("1".equals(activeDen)) {
+            		if ("1".equals(activeDen) || DenominationConstants.Thousands.name().equals(activeDen)) {
                 		factor = 1000;
-                	}else if("3".equals(activeDen)){
+                	}else if("3".equals(activeDen) || DenominationConstants.Billions.name().equals(activeDen)){
                 		factor = 1000000000;
                 	}else {
                 		factor = 1000000;
@@ -150,7 +151,10 @@ public class CorpOverviewDataApiV3 implements V3NucleusDataAPI {
             }else if(DataEndpoint.MTN_TREND_ANALYSIS_FOR_KPI.toString().equals(resourceId) || DataEndpoint.MTN_TREND_ANALYSIS_FOR_COMPANY.toString().equals(resourceId)) {
             	if(queryParams.containsKey("years") && !queryParams.get("years").isEmpty()) {
             		List<String> years = queryParams.get("years");
-            		c4sComponentDTO = getModifiedScaleFactorFromDenomination(c4sComponentDTO, null, years);
+            		if(years!=null && ((years.size() > 0 && years.get(0) != null) && !years.isEmpty())) {
+            			c4sComponentDTO = getModifiedScaleFactorFromDenomination(c4sComponentDTO, null, years);	
+            		}
+            		
             		c4sComponentDTO = getModifiedVisibility(c4sComponentDTO, years);
             	}
             }
