@@ -98,11 +98,16 @@ public class MTNCompanyProfileRMO {
     @Dimension(label="Is TTM")
     private String periodType;
     
+    @JsonProperty("mtnCurrencyId")
+    @Dimension(label="MTN Currency Id",isVisible = false)
+    private String mtnCurrencyId;
+    
     @JsonProperty(CURRENCY)
     public void unpackCurrencyValue(Map<String,Integer> currencyMap) throws ClientProtocolException, ExecutionException, IOException {
     	try {
     	Map<String,MasterDataGenericRMO> currencyList = (Map<String,MasterDataGenericRMO>) CacheManager.getInstance().getCachedObjects(CacheManager.getInstance().getDefaultMasterPackageKey(30, VlmConstants.CurrencyData.name()));
     	this.currency = currencyList.get(currencyMap.get("value").toString()).getName();
+    	this.mtnCurrencyId = currencyMap.get("id").toString();
     	}catch(Exception e) {
     		e.printStackTrace();
     	}

@@ -18,7 +18,7 @@ public class GetMTNKPICatalogRMO {
     private String text;
 
     @JsonProperty(KPI_ID)
-    @Dimension(label="KPI ID")
+    @Dimension(label="KPI")
     private String kpiId;
 
     @JsonProperty(IS_SELECTED)
